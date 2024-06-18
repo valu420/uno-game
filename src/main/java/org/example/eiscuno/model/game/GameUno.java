@@ -1,5 +1,6 @@
 package org.example.eiscuno.model.game;
 
+import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.player.Player;
@@ -44,6 +45,24 @@ public class GameUno implements IGameUno {
                 machinePlayer.addCard(this.deck.takeCard());
             }
         }
+    }
+
+    public void initialCard(Table table, ImageView imageView){
+        Card initialCard = null;
+        boolean isValidCardToStart = false;
+        while (!isValidCardToStart) {
+            Card card = deck.takeCard();
+            String value = card.getValue();
+            if (!(value.matches("[0-9]"))){
+                System.out.println("Esta carta no puede comenzar el juego");
+            }
+            else{
+                initialCard = card;
+                isValidCardToStart = true;
+            }
+        }
+        table.addCardOnTheTable(initialCard);
+        imageView.setImage(initialCard.getImage());
     }
 
     /**
@@ -111,4 +130,6 @@ public class GameUno implements IGameUno {
     public Boolean isGameOver() {
         return null;
     }
+
+
 }

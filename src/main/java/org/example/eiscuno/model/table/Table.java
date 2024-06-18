@@ -38,4 +38,18 @@ public class Table {
         }
         return this.cardsTable.get(this.cardsTable.size()-1);
     }
+
+    public Boolean isValidCard(Card card){
+        Card currentCardOnTheTable = getCurrentCardOnTheTable();
+//        System.out.println("Card to play: " + card.getColor() + " " + card.getValue());
+//        System.out.println("Card on table: " + currentCardOnTheTable.getColor() + " " + currentCardOnTheTable.getValue());
+
+        if (card.getColor().equals(currentCardOnTheTable.getColor()) || card.getValue().equals(currentCardOnTheTable.getValue())
+                || card.getValue().equals("W") || card.getValue().equals("+4") || card.getColor().equals("BLACK")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

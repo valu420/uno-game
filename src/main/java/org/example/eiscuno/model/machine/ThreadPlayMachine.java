@@ -19,6 +19,7 @@ public class ThreadPlayMachine extends Thread {
     }
 
     public void run() {
+        boolean hasMachinePlayedCard = false;
         while (true){
             if(hasPlayerPlayed){
                 try{
@@ -26,18 +27,26 @@ public class ThreadPlayMachine extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                // Aqui iria la logica de colocar la carta
-                putCardOnTheTable();
-                hasPlayerPlayed = false;
+                while(!hasMachinePlayedCard){
+                    Card card = chooseRandomCard();
+                    if (this.table.isValidCard(card)){
+                        putCardOnTheTable(card);
+                        hasPlayerPlayed = false;
+                        hasMachinePlayedCard = true;
+                    }
+                }
             }
         }
     }
 
-    private void putCardOnTheTable(){
-        int index = (int) (Math.random() * machinePlayer.getCardsPlayer().size());
-        Card card = machinePlayer.getCard(index);
+    private void putCardOnTheTable(Card card){
         table.addCardOnTheTable(card);
         tableImageView.setImage(card.getImage());
+    }
+
+    private Card chooseRandomCard(){
+        int index = (int) (Math.random() * machinePlayer.getCardsPlayer().size());
+        return machinePlayer.getCard(index);
     }
 
     public void setHasPlayerPlayed(boolean hasPlayerPlayed) {
