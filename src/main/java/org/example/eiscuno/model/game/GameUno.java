@@ -1,7 +1,9 @@
 package org.example.eiscuno.model.game;
 
+import org.example.eiscuno.controller.GameUnoController;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
+import org.example.eiscuno.model.machine.ThreadPlayMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 
@@ -15,6 +17,7 @@ public class GameUno implements IGameUno {
     private Player machinePlayer;
     private Deck deck;
     private Table table;
+    private GameUnoController gameUnoController = new GameUnoController();
 
     /**
      * Constructs a new GameUno instance.
@@ -66,8 +69,26 @@ public class GameUno implements IGameUno {
      */
     @Override
     public void playCard(Card card) {
+        String playerType = humanPlayer.getTypePlayer();
+        String playerMachime = machinePlayer.getTypePlayer();
         this.table.addCardOnTheTable(card);
+        postMoveActions(playerType);
+        postMoveActions(playerMachime);
+        
     }
+//game over funcion
+    private void postMoveActions(String playerType) {
+        if (playerType.equals(humanPlayer.getTypePlayer())) {
+            if (humanPlayer.getCardsPlayer().isEmpty()) {
+                System.out.println("\nFin de la partida!\n");
+                isGameOver();
+            } else if (playerType.equals(machinePlayer.getTypePlayer())) {
+                if (machinePlayer.getCardsPlayer().isEmpty()) {
+                    System.out.println("\nFin de la partida!\n");
+                    isGameOver();
+                }
+            }
+    }    }
 
     /**
      * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.
