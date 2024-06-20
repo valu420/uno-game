@@ -1,10 +1,20 @@
 package org.example.eiscuno.model.game;
 
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.PopUpStage;
+
+import java.io.IOException;
 
 /**
  * Represents a game of Uno.
@@ -66,26 +76,23 @@ public class GameUno implements IGameUno {
     }
 
     /**
-     * Allows a player to draw a specified number of cards from the deck.
-     *
-     * @param player        The player who will draw cards.
-     * @param numberOfCards The number of cards to draw.
-     */
-    @Override
-    public void eatCard(Player player, int numberOfCards) {
-        for (int i = 0; i < numberOfCards; i++) {
-            player.addCard(this.deck.takeCard());
-        }
-    }
-
-    /**
      * Places a card on the table during the game.
      *
      * @param card The card to be placed on the table.
      */
     @Override
-    public void playCard(Card card) {
+    public void playCard(Card card) throws IOException {
         this.table.addCardOnTheTable(card);
+        if (card.getValue().equals("W")){
+            new PopUpStage(card);
+        }
+        if (card.getValue().equals("+4")){
+            machinePlayer.drawCards(deck, 4);
+            new PopUpStage(card);
+        }
+        if (card.getValue().equals("+2")){
+            machinePlayer.drawCards(deck, 2);
+        }
     }
 
     /**
@@ -130,6 +137,5 @@ public class GameUno implements IGameUno {
     public Boolean isGameOver() {
         return null;
     }
-
 
 }

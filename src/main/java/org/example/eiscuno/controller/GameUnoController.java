@@ -13,6 +13,8 @@ import org.example.eiscuno.model.machine.ThreadSingUNOMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 
+import java.io.IOException;
+
 /**
  * Controller class for the Uno game.
  */
@@ -51,7 +53,7 @@ public class GameUnoController {
         Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
         t.start();
 
-        threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView);
+        threadPlayMachine = new ThreadPlayMachine(this.deck, this.humanPlayer,this.table, this.machinePlayer, this.tableImageView);
         threadPlayMachine.start();
     }
 
@@ -81,9 +83,13 @@ public class GameUnoController {
             ImageView cardImageView = card.getCard();
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
-                    if (this.table.isValidCard(card)) {
-                        gameUno.playCard(card);
-                        tableImageView.setImage(card.getImage());
+                 if (this.table.isValidCard(card)) {
+                     try {
+                         gameUno.playCard(card);
+                     } catch (IOException e) {
+                         throw new RuntimeException(e);
+                     }
+                     tableImageView.setImage(card.getImage());
                         humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                         threadPlayMachine.setHasPlayerPlayed(true);
                         printCardsHumanPlayer();

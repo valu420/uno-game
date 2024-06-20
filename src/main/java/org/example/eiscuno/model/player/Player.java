@@ -1,6 +1,7 @@
 package org.example.eiscuno.model.player;
 
 import org.example.eiscuno.model.card.Card;
+import org.example.eiscuno.model.deck.Deck;
 
 import java.util.ArrayList;
 
@@ -62,5 +63,12 @@ public class Player implements IPlayer {
 
     public String getTypePlayer() {
         return typePlayer;
+    }
+
+    @Override
+    public void drawCards(Deck deck, int numberOfCards) {
+        for (int i = 0; i < numberOfCards; i++) {
+            addCard(deck.takeCard());
+        }
     }
 }

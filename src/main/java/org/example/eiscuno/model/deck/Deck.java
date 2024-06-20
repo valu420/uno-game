@@ -66,7 +66,7 @@ public class Deck {
             return "+2";
         } else if (name.startsWith("RESERVE_")) {
             return "R";
-        } else if (name.startsWith("SKIP_")) {
+        } else if (name.contains("SKIP_")) {
             return "S";
         } else if (name.equals("WILD")) {
             return "W";
