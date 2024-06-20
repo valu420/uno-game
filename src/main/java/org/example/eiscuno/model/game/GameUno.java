@@ -101,6 +101,26 @@ public class GameUno implements IGameUno {
 
         return cards;
     }
+    /**
+     * Retrieves the current visible cards of the machine player.
+     *
+     * @return an array of cards that are currently visible to the machine player
+     */
+    @Override
+    public Card[] getCurrentVisibleCardsMachinePlayer(int posInitCardToShow) {
+        int totalCards = this.machinePlayer.getCardsPlayer().size();
+        int numVisibleCards = Math.min(4, totalCards - posInitCardToShow); // Mostrar como máximo 4 cartas
+
+        Card[] cards = new Card[numVisibleCards];
+
+        for (int i = 0; i < numVisibleCards; i++) {
+            // Aquí puedes establecer la lógica para las cartas visibles del jugador máquina
+            // Por ejemplo, si las cartas son visibles para la máquina, puedes devolverlas aquí
+            cards[i] = this.machinePlayer.getCard(posInitCardToShow + i); // Asumiendo un método getCard en Player
+        }
+
+        return cards;
+    }
 
     /**
      * Checks if the game is over.

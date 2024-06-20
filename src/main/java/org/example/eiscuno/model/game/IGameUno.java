@@ -42,11 +42,17 @@ public interface IGameUno {
      * @return an array of cards that are currently visible to the human player
      */
     Card[] getCurrentVisibleCardsHumanPlayer(int posInitCardToShow);
-
+    /**
+     * Retrieves the current visible cards of the machine player.
+     *
+     * @return an array of cards that are currently visible to the machine player
+     */
+    Card[] getCurrentVisibleCardsMachinePlayer(int posInitCardtoShow);
     /**
      * Checks if the game is over.
      *
      * @return true if the game is over, false otherwise
      */
+
     Boolean isGameOver();
 }
