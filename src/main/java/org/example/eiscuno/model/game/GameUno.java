@@ -1,13 +1,7 @@
 package org.example.eiscuno.model.game;
 
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.player.Player;
@@ -82,6 +76,8 @@ public class GameUno implements IGameUno {
      */
     @Override
     public void playCard(Card card) throws IOException {
+        String playerType = humanPlayer.getTypePlayer();
+        String playerMachime = machinePlayer.getTypePlayer();
         this.table.addCardOnTheTable(card);
         if (card.getValue().equals("W")){
             new PopUpStage(card);
@@ -93,7 +89,23 @@ public class GameUno implements IGameUno {
         if (card.getValue().equals("+2")){
             machinePlayer.drawCards(deck, 2);
         }
+        postMoveActions(playerType);
+        postMoveActions(playerMachime);
+
     }
+//game over funcion
+    private void postMoveActions(String playerType) {
+        if (playerType.equals(humanPlayer.getTypePlayer())) {
+            if (humanPlayer.getCardsPlayer().isEmpty()) {
+                System.out.println("\nFin de la partida!\n");
+                isGameOver();
+            } else if (playerType.equals(machinePlayer.getTypePlayer())) {
+                if (machinePlayer.getCardsPlayer().isEmpty()) {
+                    System.out.println("\nFin de la partida!\n");
+                    isGameOver();
+                }
+            }
+    }    }
 
     /**
      * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.
@@ -137,5 +149,4 @@ public class GameUno implements IGameUno {
     public Boolean isGameOver() {
         return null;
     }
-
 }

@@ -22,22 +22,19 @@ public class GameUnoController {
 
     @FXML
     private GridPane gridPaneCardsMachine;
-
     @FXML
     private GridPane gridPaneCardsPlayer;
-
     @FXML
     private ImageView tableImageView;
-
     private Player humanPlayer;
     private Player machinePlayer;
     private Deck deck;
     private Table table;
     private GameUno gameUno;
     private int posInitCardToShow;
-
     private ThreadSingUNOMachine threadSingUNOMachine;
     private ThreadPlayMachine threadPlayMachine;
+    private long playerTime;
 
     /**
      * Initializes the controller.
@@ -150,7 +147,17 @@ public class GameUnoController {
      */
     @FXML
     void onHandleTakeCard(ActionEvent event) {
-        // Implement logic to take a card here
+        if (!deck.isEmpty()) {
+            Card newCard = deck.takeCard();
+            humanPlayer.addCard(newCard);
+            deck.discardCard(newCard);
+            printCardsHumanPlayer();
+            threadPlayMachine.setHasPlayerPlayed(true);
+            System.out.println("Has tomado una carta. Es turno de la maquina");
+        }else {
+            deck.refillDeckFromDiscardPile();
+            System.out.println("No hay más cartas en el mazo.");
+        }
     }
 
     /**
@@ -160,6 +167,16 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
-        // Implement logic to handle Uno event here
+        if (humanPlayer.getCardsPlayer().size() == 1) {
+            System.out.println("El jugador ha dicho UNO");
+            playerTime = System.currentTimeMillis();
+            // Aquí puedes añadir lógica adicional si hay reglas específicas para cuando se dice "UNO"
+        } else {
+            // Penalización: por ejemplo, el jugador debe tomar 2 cartas
+            humanPlayer.drawCards(deck, 2);
+            printCardsHumanPlayer();
+            System.out.println(" Tus cartas: ");
+            humanPlayer.printCardsPlayer();
+        }
     }
 }

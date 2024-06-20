@@ -11,12 +11,14 @@ import java.util.Stack;
  */
 public class Deck {
     private Stack<Card> deckOfCards;
+    private Stack<Card> discardPile;
 
     /**
      * Constructs a new deck of Uno cards and initializes it.
      */
     public Deck() {
         deckOfCards = new Stack<>();
+        discardPile = new Stack<>();
         initializeDeck();
     }
 
@@ -34,8 +36,16 @@ public class Deck {
                     cardEnum.name().startsWith("TWO_WILD_DRAW_") ||
                     cardEnum.name().equals("FOUR_WILD_DRAW") ||
                     cardEnum.name().equals("WILD")) {
-                Card card = new Card(cardEnum.getFilePath(), getCardValue(cardEnum.name()), getCardColor(cardEnum.name()));
-                deckOfCards.push(card);
+
+                String value = getCardValue(cardEnum.name());
+                String color = getCardColor(cardEnum.name());
+
+                if (value != null && color != null) {
+                    Card card = new Card(cardEnum.getFilePath(), value, color);
+                    deckOfCards.push(card);
+                } else {
+                    System.err.println("Invalid card configuration: " + cardEnum.name());
+                }
             }
         }
         Collections.shuffle(deckOfCards);
@@ -101,6 +111,7 @@ public class Deck {
      */
     public Card takeCard() {
         if (deckOfCards.isEmpty()) {
+            refillDeckFromDiscardPile();
             throw new IllegalStateException("No hay más cartas en el mazo.");
         }
         return deckOfCards.pop();
@@ -113,5 +124,29 @@ public class Deck {
      */
     public boolean isEmpty() {
         return deckOfCards.isEmpty();
+    }
+
+    /**
+     * Refill the deck from the discard pile and shuffle it.
+     */
+    public void refillDeckFromDiscardPile() {
+        if (discardPile.isEmpty()) {
+            return;
+        }
+        Card lastDiscardedCard = discardPile.pop();
+        while (!discardPile.isEmpty()) {
+            deckOfCards.push(discardPile.pop());
+        }
+        discardPile.push(lastDiscardedCard);
+        Collections.shuffle(deckOfCards);
+    }
+
+    /**
+     * Adds a card to the discard pile.
+     *
+     * @param card the card to be added to the discard pile
+     */
+    public void discardCard(Card card) {
+        discardPile.push(card);
     }
 }

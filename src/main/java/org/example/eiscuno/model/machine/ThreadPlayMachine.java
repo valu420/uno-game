@@ -14,6 +14,7 @@ public class ThreadPlayMachine extends Thread {
     private ImageView tableImageView;
     private volatile boolean hasPlayerPlayed;
 
+
     public ThreadPlayMachine(Deck deck, Player humanPlayer, Table table, Player machinePlayer, ImageView tableImageView) {
         this.table = table;
         this.humanPlayer = humanPlayer;
@@ -21,49 +22,71 @@ public class ThreadPlayMachine extends Thread {
         this.machinePlayer = machinePlayer;
         this.tableImageView = tableImageView;
         this.hasPlayerPlayed = false;
+
     }
 
     public void run() {
         boolean hasMachinePlayedCard = false;
-        while (true){
-            if(hasPlayerPlayed){
-                try{
+        while (true) {
+            if (hasPlayerPlayed) {
+                try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                while(!hasMachinePlayedCard){
-                    Card card = chooseRandomCard();
-                    if (this.table.isValidCard(card)){
-                        if (card.getValue().equals("W")){
-                            card.setColor(chooseRandomColor());
-                            System.out.println("El color de la partida ha sido cambiado a: "+card.getColor());
-                        }
-                        if(card.getValue().equals("+4")){
-                            humanPlayer.drawCards(deck, 4);
-                            card.setColor(chooseRandomColor());
-                            System.out.println("El color de la partida ha sido cambiado a: "+card.getColor());
-                        }
-                        if(card.getValue().equals("+2")){
-                            humanPlayer.drawCards(deck, 2);
-                        }
-                        putCardOnTheTable(card);
-                        hasPlayerPlayed = false;
+                while (!hasMachinePlayedCard) {
+                    if(!machinePlayer.findPlayableCard(table.getCurrentCardOnTheTable().getColor(), table.getCurrentCardOnTheTable().getValue())) {
+                        machinePlayer.drawCards(deck, 1);
+                        System.out.println("La maquina se comio 1 carta");
+                        System.out.println(machinePlayer.getCardsPlayer().size());
                         hasMachinePlayedCard = true;
                     }
+                    else{
+                        Card card = chooseRandomCard();
+                        if (this.table.isValidCard(card)) {
+                            if (card.getValue().equals("W")) {
+                                card.setColor(chooseRandomColor());
+                                System.out.println("El color de la partida ha sido cambiado a: " + card.getColor());
+                            }
+                            if (card.getValue().equals("+4")) {
+                                humanPlayer.drawCards(deck, 4);
+                                card.setColor(chooseRandomColor());
+                                System.out.println("El color de la partida ha sido cambiado a: " + card.getColor());
+                            }
+                            if (card.getValue().equals("+2")) {
+                                humanPlayer.drawCards(deck, 2);
+                            }
+                            putCardOnTheTable(card);
+                            machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
+                            hasPlayerPlayed = false;
+                            hasMachinePlayedCard = true;
+                            System.out.println(machinePlayer.getCardsPlayer().size());
+                        }
+                    }
                 }
+                hasMachinePlayedCard = false;
+                hasPlayerPlayed = false;
             }
         }
     }
 
-    private void putCardOnTheTable(Card card){
+    private void putCardOnTheTable(Card card) {
         table.addCardOnTheTable(card);
         tableImageView.setImage(card.getImage());
     }
 
-    private String chooseRandomColor(){
+    private Card chooseRandomCard () {
+        int index = (int) (Math.random() * machinePlayer.getCardsPlayer().size());
+        return machinePlayer.getCard(index);
+    }
+
+    public void setHasPlayerPlayed ( boolean hasPlayerPlayed){
+        this.hasPlayerPlayed = hasPlayerPlayed;
+    }
+
+    private String chooseRandomColor () {
         String color = "";
-        int numColor = (int) ((Math.random() * 4)+1);
+        int numColor = (int) ((Math.random() * 4) + 1);
         color = switch (numColor) {
             case 1 -> "RED";
             case 2 -> "BLUE";
@@ -72,14 +95,5 @@ public class ThreadPlayMachine extends Thread {
             default -> color;
         };
         return color;
-    }
-
-    private Card chooseRandomCard(){
-        int index = (int) (Math.random() * machinePlayer.getCardsPlayer().size());
-        return machinePlayer.getCard(index);
-    }
-
-    public void setHasPlayerPlayed(boolean hasPlayerPlayed) {
-        this.hasPlayerPlayed = hasPlayerPlayed;
     }
 }

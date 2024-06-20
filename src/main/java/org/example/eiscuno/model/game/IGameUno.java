@@ -1,7 +1,6 @@
 package org.example.eiscuno.model.game;
 
 import org.example.eiscuno.model.card.Card;
-import org.example.eiscuno.model.deck.Deck;
 
 import java.io.IOException;
 
