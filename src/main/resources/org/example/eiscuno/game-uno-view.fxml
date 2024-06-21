@@ -38,7 +38,7 @@
          <children>
             <Label text="EISC Uno" textFill="RED">
                <font>
-                  <Font name="Berlin Sans FB Bold" size="18.0" />
+                  <Font name="SansSerif Bold" size="24.0" />
                </font>
             </Label>
             <GridPane fx:id="gridPaneCardsMachine">
@@ -52,7 +52,10 @@
                   <RowConstraints />
                </rowConstraints>
             </GridPane>
-            <Button mnemonicParsing="false" text="Salir" />
+            <Button mnemonicParsing="false" style="-fx-background-color: red;" text="Salir" textFill="WHITE">
+               <font>
+                  <Font name="SansSerif Bold" size="12.0" />
+               </font></Button>
          </children>
       </HBox>
    </top>
@@ -61,7 +64,7 @@
          <children>
             <Button mnemonicParsing="false" onAction="#onHandleBack" prefWidth="74.0" style="-fx-background-color: red;" text="Anterior" textFill="WHITE">
                <font>
-                  <Font name="Berlin Sans FB" size="12.0" />
+                  <Font name="SansSerif Bold" size="12.0" />
                </font></Button>
             <GridPane fx:id="gridPaneCardsPlayer">
               <columnConstraints>
@@ -74,7 +77,10 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <Button mnemonicParsing="false" onAction="#onHandleNext" prefWidth="74.0" style="-fx-background-color: RED;" text="Siguiente" textFill="WHITE" />
+            <Button mnemonicParsing="false" onAction="#onHandleNext" prefHeight="27.0" prefWidth="82.0" style="-fx-background-color: RED;" text="Siguiente" textFill="WHITE">
+               <font>
+                  <Font name="SansSerif Bold" size="12.0" />
+               </font></Button>
          </children>
       </HBox>
    </bottom>

@@ -1,5 +1,7 @@
 package org.example.eiscuno.model.machine;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
@@ -46,12 +48,12 @@ public class ThreadPlayMachine extends Thread {
                         if (this.table.isValidCard(card)) {
                             if (card.getValue().equals("W")) {
                                 card.setColor(chooseRandomColor());
-                                System.out.println("El color de la partida ha sido cambiado a: " + card.getColor());
+                                createAlert("El color de la partida ha cambiado a "+card.getColor().toUpperCase());
                             }
                             if (card.getValue().equals("+4")) {
                                 humanPlayer.drawCards(deck, 4);
                                 card.setColor(chooseRandomColor());
-                                System.out.println("El color de la partida ha sido cambiado a: " + card.getColor());
+                                createAlert("El color de la partida ha cambiado a "+card.getColor().toUpperCase());
                             }
                             if (card.getValue().equals("+2")) {
                                 humanPlayer.drawCards(deck, 2);
@@ -96,4 +98,15 @@ public class ThreadPlayMachine extends Thread {
         };
         return color;
     }
+
+    private void createAlert(String text){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Información");
+            alert.setHeaderText(null);
+            alert.setContentText(text);
+            alert.showAndWait();
+        });
 }
+}
+
