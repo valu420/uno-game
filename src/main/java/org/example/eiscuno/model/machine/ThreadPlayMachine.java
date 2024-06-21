@@ -7,6 +7,7 @@ import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.alert.alertInformation;
 
 public class ThreadPlayMachine extends Thread {
     private Player humanPlayer;
@@ -48,12 +49,14 @@ public class ThreadPlayMachine extends Thread {
                         if (this.table.isValidCard(card)) {
                             if (card.getValue().equals("W")) {
                                 card.setColor(chooseRandomColor());
-                                createAlert("El color de la partida ha cambiado a "+card.getColor().toUpperCase());
+                                createAlert("El color de la partida ha cambiado a "+card.getColor().toUpperCase(),
+                                        "¡Cambio de color!");
                             }
                             if (card.getValue().equals("+4")) {
                                 humanPlayer.drawCards(deck, 4);
                                 card.setColor(chooseRandomColor());
-                                createAlert("El color de la partida ha cambiado a "+card.getColor().toUpperCase());
+                                createAlert("El color de la partida ha cambiado a "+card.getColor().toUpperCase(),
+                                        "¡Cambio de color!");
                             }
                             if (card.getValue().equals("+2")) {
                                 humanPlayer.drawCards(deck, 2);
@@ -69,7 +72,8 @@ public class ThreadPlayMachine extends Thread {
                             else if(card.getValue().equals("R") || card.getValue().equals("S")) {
                                 putCardOnTheTable(card);
                                 machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
-                                System.out.println("La maquina ha jugado una carta "+card.getValue()+"\nVolvera a tirar una carta");
+                                createAlert("La maquina ha jugado una carta "+card.getValue()+"\nVolvera a tirar una carta",
+                                        "¡Vuelve a jugar!");
                                 try {
                                     Thread.sleep(2000);
                                 } catch (InterruptedException e) {
@@ -112,13 +116,9 @@ public class ThreadPlayMachine extends Thread {
         return color;
     }
 
-    private void createAlert(String text){
+    private void createAlert(String text, String title){
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Información");
-            alert.setHeaderText(null);
-            alert.setContentText(text);
-            alert.showAndWait();
+            alertInformation.createAlert(text, title);
         });
 }
 }

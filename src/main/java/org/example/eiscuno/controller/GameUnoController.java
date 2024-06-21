@@ -93,13 +93,14 @@ public class GameUnoController {
                         humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                      if (card.getValue().equals("R") || card.getValue().equals("S")) {
                          printCardsHumanPlayer();
-                         alertInformation.createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta");
+                         alertInformation.createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta",
+                                 "¡Vuelve a jugar!");
                      } else {
                          threadPlayMachine.setHasPlayerPlayed(true);
                          printCardsHumanPlayer();
                      }
                     } else {
-                        System.out.println("No puedes jugar esta carta");
+                        alertInformation.createAlert("No puedes jugar esa carta", "Carta no valida");
                     }
             });
 
@@ -161,10 +162,8 @@ public class GameUnoController {
             deck.discardCard(newCard);
             printCardsHumanPlayer();
             threadPlayMachine.setHasPlayerPlayed(true);
-            System.out.println("Has tomado una carta. Es turno de la maquina");
         }else {
             deck.refillDeckFromDiscardPile();
-            System.out.println("No hay más cartas en el mazo.");
         }
     }
 

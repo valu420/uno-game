@@ -73,9 +73,7 @@ public class Player implements IPlayer {
     }
 
     /**
-     * Finds a playable card that matches the current card's color or value.
-     *
-     * @param currentColor the color of the current card on the table
+     * Finds a playable card that matches the current card's color or value.     * @param currentColor the color of the current card on the table
      * @param currentValue the value of the current card on the table
      * @return a playable card, or null if no card can be played
      */

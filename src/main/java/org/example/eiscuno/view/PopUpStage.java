@@ -24,7 +24,7 @@ public class PopUpStage extends Stage {
         popupStage.initModality(Modality.APPLICATION_MODAL);
         popupStage.initStyle(StageStyle.UTILITY);
 
-        popupStage.setTitle("Ventana emergente");
+        popupStage.setTitle("¡Cambio de color!");
 
         Label label = new Label("Escoge el color al que quieres cambiar la partida");
         Button BLUE = new Button("AZUL");
@@ -42,41 +42,29 @@ public class PopUpStage extends Stage {
         BLUE.setOnAction(e -> {
             card.setColor("BLUE");
             gridPane.getChildren().clear();
-            Label newContent = new Label("El color de la partida ha sido cambiado a AZUL");
-            newContent.setAlignment(Pos.CENTER);
-            gridPane.add(newContent, 0, 0);
             popupStage.close();
-            alertInformation.createAlert("El color de la partida ha cambiado a AZUL");
+            alertInformation.createAlert("El color de la partida ha cambiado a AZUL", "¡Cambio de color!");
         });
 
         RED.setOnAction(e -> {
             card.setColor("RED");
             gridPane.getChildren().clear();
-            Label newContent = new Label("El color de la partida ha sido cambiado a ROJO");
-            newContent.setAlignment(Pos.CENTER);
-            gridPane.add(newContent, 0, 0);
             popupStage.close();
-            alertInformation.createAlert("El color de la partida ha cambiado a ROJO");
+            alertInformation.createAlert("El color de la partida ha cambiado a ROJO", "¡Cambio de color!");
         });
 
         YELLOW.setOnAction(e -> {
             card.setColor("YELLOW");
             gridPane.getChildren().clear();
-            Label newContent = new Label("El color de la partida ha sido cambiado a AMARILLO");
-            newContent.setAlignment(Pos.CENTER);
-            gridPane.add(newContent, 0, 0);
             popupStage.close();
-            alertInformation.createAlert("El color de la partida ha cambiado a AMARILLO");
+            alertInformation.createAlert("El color de la partida ha cambiado a AMARILLO", "¡Cambio de color!");
         });
 
         GREEN.setOnAction(e -> {
             card.setColor("GREEN");
             gridPane.getChildren().clear();
-            Label newContent = new Label("El color de la partida ha sido cambiado a VERDE");
-            newContent.setAlignment(Pos.CENTER);
-            gridPane.add(newContent, 0, 0);
             popupStage.close();
-            alertInformation.createAlert("El color de la partida ha cambiado a VERDE");
+            alertInformation.createAlert("El color de la partida ha cambiado a VERDE", "¡Cambio de color!");
         });
 
         GridPane gridPane = new GridPane();
@@ -94,13 +82,4 @@ public class PopUpStage extends Stage {
         popupStage.showAndWait();
     }
 
-//    private void createAlert(String text){
-//        Platform.runLater(() -> {
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Información");
-//            alert.setHeaderText(null);
-//            alert.setContentText(text);
-//            alert.showAndWait();
-//        });
-//    }
 }

@@ -58,7 +58,7 @@ public class GameUno implements IGameUno {
             Card card = deck.takeCard();
             String value = card.getValue();
             if (!(value.matches("[0-9]"))){
-                System.out.println("Esta carta no puede comenzar el juego");
+                deck.addCardToDeck(card);
             }
             else{
                 initialCard = card;

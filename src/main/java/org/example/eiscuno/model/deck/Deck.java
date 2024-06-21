@@ -51,6 +51,14 @@ public class Deck {
         Collections.shuffle(deckOfCards);
     }
 
+    public Stack<Card> getDiscardPile() {
+        return discardPile;
+    }
+
+    public Stack<Card> getDeckOfCards() {
+        return deckOfCards;
+    }
+
     private String getCardValue(String name) {
         if (name.endsWith("0")){
             return "0";
@@ -112,14 +120,15 @@ public class Deck {
     public Card takeCard() {
         if (deckOfCards.isEmpty()) {
             refillDeckFromDiscardPile();
-            throw new IllegalStateException("No hay más cartas en el mazo.");
+            if (deckOfCards.isEmpty()) {
+                throw new IllegalStateException("No hay más cartas en el mazo.");
+            }
         }
         return deckOfCards.pop();
     }
 
     /**
      * Checks if the deck is empty.
-     *
      * @return true if the deck is empty, false otherwise
      */
     public boolean isEmpty() {
@@ -143,10 +152,13 @@ public class Deck {
 
     /**
      * Adds a card to the discard pile.
-     *
      * @param card the card to be added to the discard pile
      */
     public void discardCard(Card card) {
         discardPile.push(card);
+    }
+
+    public void addCardToDeck(Card card) {
+        deckOfCards.push(card);
     }
 }
