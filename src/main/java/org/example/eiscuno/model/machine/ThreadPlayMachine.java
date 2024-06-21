@@ -10,6 +10,9 @@ import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 import org.example.eiscuno.model.unoenum.EISCUnoEnum;
 
+/**
+ * Thread that manages the machine player's actions in an Uno game.
+ */
 public class ThreadPlayMachine extends Thread {
     private Player humanPlayer;
     private Table table;
@@ -19,9 +22,18 @@ public class ThreadPlayMachine extends Thread {
     private GridPane gridPaneCardsMachine;
     private volatile boolean hasPlayerPlayed;
     private volatile boolean running = true;
-
     private int posInitCardToShow;
 
+    /**
+     * Constructs a new ThreadPlayMachine instance.
+     *
+     * @param deck                 The deck of cards used in the game.
+     * @param humanPlayer          The human player participating in the game.
+     * @param table                The table where cards are placed during the game.
+     * @param machinePlayer        The machine player participating in the game.
+     * @param tableImageView       The ImageView displaying the current card on the table.
+     * @param gridPaneCardsMachine The GridPane displaying the machine player's cards.
+     */
     public ThreadPlayMachine(Deck deck, Player humanPlayer, Table table, Player machinePlayer, ImageView tableImageView, GridPane gridPaneCardsMachine) {
         this.table = table;
         this.humanPlayer = humanPlayer;
@@ -33,6 +45,9 @@ public class ThreadPlayMachine extends Thread {
         this.posInitCardToShow = 0;
     }
 
+    /**
+     * The run method defines the actions taken by the machine player during the game.
+     */
     @Override
     public void run() {
         boolean hasMachinePlayedCard = false;
@@ -92,6 +107,11 @@ public class ThreadPlayMachine extends Thread {
         }
     }
 
+    /**
+     * Handles special cards (Wild, +4, +2) played by the machine.
+     *
+     * @param card The special card played.
+     */
     private void handleSpecialCards(Card card) {
         if (card.getValue().equals("W")) {
             card.setColor(chooseRandomColor());
@@ -107,6 +127,11 @@ public class ThreadPlayMachine extends Thread {
         }
     }
 
+    /**
+     * Places a card on the table and updates the UI.
+     *
+     * @param card The card to be placed on the table.
+     */
     private void putCardOnTheTable(Card card) {
         table.addCardOnTheTable(card);
         Platform.runLater(() -> {
@@ -121,6 +146,9 @@ public class ThreadPlayMachine extends Thread {
         });
     }
 
+    /**
+     * Updates the view of the machine player's cards.
+     */
     public void updateMachineCardsView() {
         Platform.runLater(() -> {
             gridPaneCardsMachine.getChildren().clear();
@@ -137,6 +165,12 @@ public class ThreadPlayMachine extends Thread {
         });
     }
 
+    /**
+     * Retrieves the current visible cards of the machine player.
+     *
+     * @param posInitCardToShow The initial position of the cards to show.
+     * @return An array of visible cards.
+     */
     private Card[] getCurrentVisibleCardsMachine(int posInitCardToShow) {
         int totalCards = machinePlayer.getCardsPlayer().size();
         int numVisibleCards = Math.min(4, totalCards - posInitCardToShow);
@@ -147,21 +181,41 @@ public class ThreadPlayMachine extends Thread {
         return cards;
     }
 
+    /**
+     * Chooses a random card from the machine player's hand.
+     *
+     * @return A randomly selected card.
+     */
     private Card chooseRandomCard() {
         int index = (int) (Math.random() * machinePlayer.getCardsPlayer().size());
         return machinePlayer.getCard(index);
     }
 
+    /**
+     * Sets the hasPlayerPlayed flag.
+     *
+     * @param hasPlayerPlayed Indicates if the human player has played a card.
+     */
     public void setHasPlayerPlayed(boolean hasPlayerPlayed) {
         this.hasPlayerPlayed = hasPlayerPlayed;
     }
 
+    /**
+     * Chooses a random color for Wild cards.
+     *
+     * @return A randomly selected color.
+     */
     private String chooseRandomColor() {
         String[] colors = {"RED", "BLUE", "GREEN", "YELLOW"};
         int numColor = (int) (Math.random() * colors.length);
         return colors[numColor];
     }
 
+    /**
+     * Creates an alert dialog with the specified text.
+     *
+     * @param text The text to display in the alert dialog.
+     */
     private void createAlert(String text) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -171,6 +225,13 @@ public class ThreadPlayMachine extends Thread {
             alert.showAndWait();
         });
     }
+
+    /**
+     * Sets the running flag to stop the thread.
+     *
+     * @param running The running state to set.
+     * @return The updated running state.
+     */
     public boolean isRunning(boolean running) {
         return running;
     }

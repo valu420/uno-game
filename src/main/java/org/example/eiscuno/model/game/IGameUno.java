@@ -46,6 +46,5 @@ public interface IGameUno {
      *
      * @return true if the game is over, false otherwise
      */
-
     Boolean isGameOver();
 }

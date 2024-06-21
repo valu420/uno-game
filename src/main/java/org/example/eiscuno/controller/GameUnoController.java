@@ -75,8 +75,6 @@ public class GameUnoController {
     /**
      * Prints the human player's cards on the grid pane.
      */
-
-
     private void printCardsHumanPlayer() {
         this.gridPaneCardsPlayer.getChildren().clear();
         Card[] currentVisibleCardsHumanPlayer = this.gameUno.getCurrentVisibleCardsHumanPlayer(this.posInitCardToShow);
@@ -110,6 +108,12 @@ public class GameUnoController {
         }
     }
 
+    /**
+     * Finds the position of a card in the human player's hand.
+     *
+     * @param card the card to find
+     * @return the position of the card, or -1 if not found
+     */
     private Integer findPosCardsHumanPlayer(Card card) {
         for (int i = 0; i < this.humanPlayer.getCardsPlayer().size(); i++) {
             if (this.humanPlayer.getCardsPlayer().get(i).equals(card)) {

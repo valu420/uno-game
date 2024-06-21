@@ -13,7 +13,17 @@ import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
+/**
+ * This class represents a custom pop-up stage for selecting a color for a card game.
+ * It extends Stage and creates a modal utility stage to choose and display color options.
+ */
 public class PopUpStage extends Stage {
+
+    /**
+     * Constructor for PopUpStage.
+     * @param card The card object whose color is to be changed based on user selection.
+     * @throws IOException If an I/O exception occurs while creating the stage.
+     */
     private GridPane gridPane;
     public PopUpStage(Card card) throws IOException {
         Stage popupStage = new Stage();
@@ -22,12 +32,14 @@ public class PopUpStage extends Stage {
 
         popupStage.setTitle("Ventana emergente");
 
+        // Components for selecting color
         Label label = new Label("Escoge el color al que quieres cambiar la partida");
         Button BLUE = new Button("AZUL");
         Button RED = new Button("ROJO");
         Button YELLOW = new Button("AMARILLO");
         Button GREEN = new Button("VERDE");
 
+        // Setting background colors for buttons
         BLUE.setStyle("-fx-background-color: blue;");
         RED.setStyle("-fx-background-color: red;");
         YELLOW.setStyle("-fx-background-color: yellow;");
@@ -35,6 +47,7 @@ public class PopUpStage extends Stage {
 
         gridPane = new GridPane();
 
+        // Event handlers for color buttons
         BLUE.setOnAction(e -> {
             card.setColor("BLUE");
             gridPane.getChildren().clear();
@@ -75,6 +88,7 @@ public class PopUpStage extends Stage {
             alertInformation.createAlert("El color de la partida ha cambiado a VERDE");
         });
 
+        // Setting up grid layout for the stage
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
         gridPane.setVgap(10);

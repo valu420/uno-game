@@ -1,6 +1,5 @@
 package org.example.eiscuno.model.game;
 
-
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
@@ -56,6 +55,12 @@ public class GameUno implements IGameUno {
         }
     }
 
+    /**
+     * Draws the initial card for the table from the deck.
+     *
+     * @param table      The table where the initial card is placed.
+     * @param imageView  The ImageView to display the initial card.
+     */
     public void initialCard(Table table, ImageView imageView){
         Card initialCard = null;
         boolean isValidCardToStart = false;
@@ -99,8 +104,11 @@ public class GameUno implements IGameUno {
 
     }
 
-
-    //game over funcion
+    /**
+     * Performs actions after a move.
+     *
+     * @param playerType The type of player who made the move.
+     */
     public void postMoveActions(String playerType) {
 
         if (playerType.equals(humanPlayer.getTypePlayer())) {
@@ -116,6 +124,11 @@ public class GameUno implements IGameUno {
         }
     }
 
+    /**
+     * Checks if the game is over and ends the game.
+     *
+     * @return Always returns null.
+     */
    @Override
    public Boolean isGameOver() {
        threadPlayMachine.isRunning(false);
@@ -167,25 +180,14 @@ public class GameUno implements IGameUno {
     @Override
     public Card[] getCurrentVisibleCardsMachinePlayer(int posInitCardToShow) {
         int totalCards = this.machinePlayer.getCardsPlayer().size();
-        int numVisibleCards = Math.min(4, totalCards - posInitCardToShow); // Mostrar como máximo 4 cartas
+        int numVisibleCards = Math.min(4, totalCards - posInitCardToShow);
 
         Card[] cards = new Card[numVisibleCards];
 
         for (int i = 0; i < numVisibleCards; i++) {
-            // Aquí puedes establecer la lógica para las cartas visibles del jugador máquina
-            // Por ejemplo, si las cartas son visibles para la máquina, puedes devolverlas aquí
-            cards[i] = this.machinePlayer.getCard(posInitCardToShow + i); // Asumiendo un método getCard en Player
+            cards[i] = this.machinePlayer.getCard(posInitCardToShow + i);
         }
 
         return cards;
     }
-
-    /**
-     * Checks if the game is over.
-     *
-     * @return True if the deck is empty, indicating the game is over; otherwise, false.
-     */
-
-
-
 }
