@@ -1,6 +1,7 @@
 package org.example.eiscuno.model.player;
 
 import org.example.eiscuno.model.card.Card;
+import org.example.eiscuno.model.deck.Deck;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,8 @@ public interface IPlayer {
      * @param card The card to be added to the player's hand.
      */
     void addCard(Card card);
+
+    void drawCards(Deck deck, int numberOfCards);
 
     /**
      * Retrieves a card from the player's hand based on its index.

@@ -20,6 +20,8 @@ import org.example.eiscuno.view.GameUnoStage;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.io.IOException;
+
 /**
  * Controller class for the Uno game.
  */
@@ -27,22 +29,19 @@ public class GameUnoController {
 
     @FXML
     private GridPane gridPaneCardsMachine;
-
     @FXML
     private GridPane gridPaneCardsPlayer;
-
     @FXML
     private ImageView tableImageView;
-
     private Player humanPlayer;
     private Player machinePlayer;
     private Deck deck;
     private Table table;
     private GameUno gameUno;
     private int posInitCardToShow;
-
     private ThreadSingUNOMachine threadSingUNOMachine;
     private ThreadPlayMachine threadPlayMachine;
+    private long playerTime;
 
     /**
      * Initializes the controller.
@@ -52,13 +51,15 @@ public class GameUnoController {
         initVariables();
         this.gameUno.startGame();
         printCardsHumanPlayer();
+        this.gameUno.initialCard(table, tableImageView);
 
 
         threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer());
         Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
         t.start();
 
-        threadPlayMachine = new ThreadPlayMachine(this.table, this.machinePlayer, this.tableImageView, this.gridPaneCardsMachine);
+
+        threadPlayMachine = new ThreadPlayMachine(this.deck, this.humanPlayer,this.table, this.machinePlayer, this.tableImageView,this.gridPaneCardsMachine);
         threadPlayMachine.start();
         Platform.runLater(() -> threadPlayMachine.printCardsMachine());
     }
@@ -78,6 +79,8 @@ public class GameUnoController {
     /**
      * Prints the human player's cards on the grid pane.
      */
+
+
     private void printCardsHumanPlayer() {
 
         this.gridPaneCardsPlayer.getChildren().clear();
@@ -88,45 +91,24 @@ public class GameUnoController {
             ImageView cardImageView = card.getCard();
 
             cardImageView.setOnMouseClicked((MouseEvent event) -> {
-                // Aqui deberian verificar si pueden en la tabla jugar esa carta
-
-                gameUno.playCard(card);
-                tableImageView.setImage(card.getImage());
-                humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                threadPlayMachine.setHasPlayerPlayed(true);
-                printCardsHumanPlayer();
-
+                 if (this.table.isValidCard(card)) {
+                     try {
+                         gameUno.playCard(card);
+                     } catch (IOException e) {
+                         throw new RuntimeException(e);
+                     }
+                     tableImageView.setImage(card.getImage());
+                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                        threadPlayMachine.setHasPlayerPlayed(true);
+                        printCardsHumanPlayer();
+                    } else {
+                        System.out.println("No puedes jugar esta carta");
+                    }
             });
 
             this.gridPaneCardsPlayer.add(cardImageView, i, 0);
         }
     }
-    /*private void printCardsMachine() {
-        this.gridPaneCardsMachine.getChildren().clear();
-        Card[] currentVisibleCardsMachine = this.gameUno.getCurrentVisibleCardsMachinePlayer(posInitCardToShow);
-
-        //int numVisibleCards = Math.min(4, machineCards.length); // Mostrar como máximo 4 cartas
-
-        for (int i = 0; i < currentVisibleCardsMachine.length; i++) {
-            // Obtener la ruta de la imagen para la carta boca abajo
-            String backImagePath = EISCUnoEnum.CARD_UNO.getFilePath();
-
-            // Crear una instancia de Card para la carta boca abajo
-            Card cardBack = new Card(backImagePath, "BACK", "NONE"); // "BACK" y "NONE" son valores de ejemplo
-
-            // Obtener el ImageView de la carta boca abajo
-            ImageView cardBackImageView = cardBack.getCard();
-
-            // Configurar tamaño y preservación de la relación según sea necesario
-            cardBackImageView.setFitWidth(100); // Ajustar tamaño según necesites
-            cardBackImageView.setPreserveRatio(true);
-
-            // Añadir el ImageView al gridPane de las cartas de la máquina
-            this.gridPaneCardsMachine.add(cardBackImageView, i, 0);
-
-        }
-
-    }*/
 
     /**
      * Finds the position of a specific card in the human player's hand.
@@ -176,7 +158,17 @@ public class GameUnoController {
      */
     @FXML
     void onHandleTakeCard(ActionEvent event) {
-        // Implement logic to take a card here
+        if (!deck.isEmpty()) {
+            Card newCard = deck.takeCard();
+            humanPlayer.addCard(newCard);
+            deck.discardCard(newCard);
+            printCardsHumanPlayer();
+            threadPlayMachine.setHasPlayerPlayed(true);
+            System.out.println("Has tomado una carta. Es turno de la maquina");
+        }else {
+            deck.refillDeckFromDiscardPile();
+            System.out.println("No hay más cartas en el mazo.");
+        }
     }
 
     /**
@@ -186,7 +178,17 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
-        // Implement logic to handle Uno event here
+        if (humanPlayer.getCardsPlayer().size() == 1) {
+            System.out.println("El jugador ha dicho UNO");
+            playerTime = System.currentTimeMillis();
+            // Aquí puedes añadir lógica adicional si hay reglas específicas para cuando se dice "UNO"
+        } else {
+            // Penalización: por ejemplo, el jugador debe tomar 2 cartas
+            humanPlayer.drawCards(deck, 2);
+            printCardsHumanPlayer();
+            System.out.println(" Tus cartas: ");
+            humanPlayer.printCardsPlayer();
+        }
     }
     @FXML
     void onHandleExit(ActionEvent event) throws IOException {

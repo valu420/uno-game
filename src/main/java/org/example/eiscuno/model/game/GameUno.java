@@ -1,9 +1,14 @@
 package org.example.eiscuno.model.game;
 
+
+import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.PopUpStage;
+
+import java.io.IOException;
 
 /**
  * Represents a game of Uno.
@@ -46,17 +51,22 @@ public class GameUno implements IGameUno {
         }
     }
 
-    /**
-     * Allows a player to draw a specified number of cards from the deck.
-     *
-     * @param player        The player who will draw cards.
-     * @param numberOfCards The number of cards to draw.
-     */
-    @Override
-    public void eatCard(Player player, int numberOfCards) {
-        for (int i = 0; i < numberOfCards; i++) {
-            player.addCard(this.deck.takeCard());
+    public void initialCard(Table table, ImageView imageView){
+        Card initialCard = null;
+        boolean isValidCardToStart = false;
+        while (!isValidCardToStart) {
+            Card card = deck.takeCard();
+            String value = card.getValue();
+            if (!(value.matches("[0-9]"))){
+                System.out.println("Esta carta no puede comenzar el juego");
+            }
+            else{
+                initialCard = card;
+                isValidCardToStart = true;
+            }
         }
+        table.addCardOnTheTable(initialCard);
+        imageView.setImage(initialCard.getImage());
     }
 
     /**
@@ -65,9 +75,37 @@ public class GameUno implements IGameUno {
      * @param card The card to be placed on the table.
      */
     @Override
-    public void playCard(Card card) {
+    public void playCard(Card card) throws IOException {
+        String playerType = humanPlayer.getTypePlayer();
+        String playerMachime = machinePlayer.getTypePlayer();
         this.table.addCardOnTheTable(card);
+        if (card.getValue().equals("W")){
+            new PopUpStage(card);
+        }
+        if (card.getValue().equals("+4")){
+            machinePlayer.drawCards(deck, 4);
+            new PopUpStage(card);
+        }
+        if (card.getValue().equals("+2")){
+            machinePlayer.drawCards(deck, 2);
+        }
+        postMoveActions(playerType);
+        postMoveActions(playerMachime);
+
     }
+//game over funcion
+    private void postMoveActions(String playerType) {
+        if (playerType.equals(humanPlayer.getTypePlayer())) {
+            if (humanPlayer.getCardsPlayer().isEmpty()) {
+                System.out.println("\nFin de la partida!\n");
+                isGameOver();
+            } else if (playerType.equals(machinePlayer.getTypePlayer())) {
+                if (machinePlayer.getCardsPlayer().isEmpty()) {
+                    System.out.println("\nFin de la partida!\n");
+                    isGameOver();
+                }
+            }
+    }    }
 
     /**
      * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.

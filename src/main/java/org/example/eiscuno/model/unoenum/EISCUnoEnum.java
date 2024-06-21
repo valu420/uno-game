@@ -2,7 +2,6 @@ package org.example.eiscuno.model.unoenum;
 
 /**
  * Enum EISCUnoEnum
- *
  * This enum represents the various file paths for the images used in the EISC Uno game.
  */
 public enum EISCUnoEnum {
