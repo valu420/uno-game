@@ -1,111 +1,177 @@
 package org.example.eiscuno.model.machine;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
-import org.example.eiscuno.model.game.GameUno;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.model.unoenum.EISCUnoEnum;
 
 public class ThreadPlayMachine extends Thread {
-    private Table table;
-    private Player machinePlayer;
     private Player humanPlayer;
-    private ImageView tableImageView;
-    private volatile boolean hasPlayerPlayed;
-    private GameUno gameUno;
-    private ThreadPlayMachine threadPlayMachine;
+    private Table table;
     private Deck deck;
+    private Player machinePlayer;
+    private ImageView tableImageView;
+    private GridPane gridPaneCardsMachine;
+    private volatile boolean hasPlayerPlayed;
+    private volatile boolean running = true;
 
+    private int posInitCardToShow;
 
-    public ThreadPlayMachine(Table table, Player machinePlayer, ImageView tableImageView) {
+    public ThreadPlayMachine(Deck deck, Player humanPlayer, Table table, Player machinePlayer, ImageView tableImageView, GridPane gridPaneCardsMachine) {
         this.table = table;
+        this.humanPlayer = humanPlayer;
+        this.deck = deck;
         this.machinePlayer = machinePlayer;
         this.tableImageView = tableImageView;
+        this.gridPaneCardsMachine = gridPaneCardsMachine;
         this.hasPlayerPlayed = false;
-        this.deck = deck;
-        this.gameUno = gameUno;
-        this.threadPlayMachine = threadPlayMachine;
-        this.humanPlayer = humanPlayer;
-
+        this.posInitCardToShow = 0;
     }
 
+    @Override
     public void run() {
-        while (true){
-            if(hasPlayerPlayed){
-                try{
+        boolean hasMachinePlayedCard = false;
+        while (true) {
+            if (hasPlayerPlayed) {
+                try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                // Aqui iria la logica de colocar la carta
-                putCardOnTheTable();
+                while (!hasMachinePlayedCard) {
+                    if(!machinePlayer.findPlayableCard(table.getCurrentCardOnTheTable().getColor(), table.getCurrentCardOnTheTable().getValue())) {
+                        machinePlayer.drawCards(deck, 1);
+                        System.out.println("La maquina se comio 1 carta");
+                        System.out.println(machinePlayer.getCardsPlayer().size());
+                        hasMachinePlayedCard = true;
+                    }
+                    else{
+                        Card card = chooseRandomCard();
+                        if (this.table.isValidCard(card)) {
+                            if (card.getValue().equals("W")) {
+                                card.setColor(chooseRandomColor());
+                                createAlert("El color de la partida ha cambiado a " + card.getColor().toUpperCase());
+                            }
+                            if (card.getValue().equals("+4")) {
+                                humanPlayer.drawCards(deck, 4);
+                                card.setColor(chooseRandomColor());
+                                createAlert("El color de la partida ha cambiado a " + card.getColor().toUpperCase());
+                            }
+                            if (card.getValue().equals("+2")) {
+                                humanPlayer.drawCards(deck, 2);
+                            }
+
+                            if (!card.getValue().equals("R") && !card.getValue().equals("S")) {
+                                putCardOnTheTable(card);
+                                machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
+                                hasPlayerPlayed = false;
+                                hasMachinePlayedCard = true;
+                                System.out.println(machinePlayer.getCardsPlayer().size());
+                            } else if (card.getValue().equals("R") || card.getValue().equals("S")) {
+                                putCardOnTheTable(card);
+                                machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
+                                System.out.println("La maquina ha jugado una carta " + card.getValue() + "\nVolvera a tirar una carta");
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                    }
+                }
+                hasMachinePlayedCard = false;
                 hasPlayerPlayed = false;
             }
         }
     }
 
-    private void putCardOnTheTable(){
-        Card topCard = table.getCurrentCardOnTheTable();
-        String currentColor = topCard.getColor();
-        String currentValue = topCard.getValue();
-        Card playableCard = machinePlayer.findPlayableCard(currentColor, currentValue);
-
-        String cardColor = "NONE";
-        String cardValue = "FOUR_WILD_DRAW";
-        Card fourCard = machinePlayer.findPlayableCard(cardColor, cardValue);
-        if (fourCard != null) {
-            table.addCardOnTheTable(fourCard);
-            tableImageView.setImage(fourCard.getImage());
-            machinePlayer.getCardsPlayer().remove(fourCard);
+    private void handleSpecialCards(Card card) {
+        if (card.getValue().equals("W")) {
+            card.setColor(chooseRandomColor());
+            System.out.println("El color de la partida ha sido cambiado a: " + card.getColor());
         }
-        else {
-            if (playableCard != null) {
-                table.addCardOnTheTable(playableCard);
-                tableImageView.setImage(playableCard.getImage());
-                machinePlayer.getCardsPlayer().remove(playableCard);
-                isWildCards(playableCard, humanPlayer);
+        if (card.getValue().equals("+4")) {
+            humanPlayer.drawCards(deck, 4);
+            card.setColor(chooseRandomColor());
+            System.out.println("El color de la partida ha sido cambiado a: " + card.getColor());
+        }
+        if (card.getValue().equals("+2")) {
+            humanPlayer.drawCards(deck, 2);
+        }
+    }
+
+    private void putCardOnTheTable(Card card) {
+        table.addCardOnTheTable(card);
+        Platform.runLater(() -> {
+            tableImageView.setImage(card.getImage());
+            int cardIndex = machinePlayer.getCardsPlayer().indexOf(card);
+            if (cardIndex != -1) {
+                machinePlayer.removeCard(cardIndex);
+                updateMachineCardsView();
             } else {
-                gameUno.eatCard(machinePlayer, 1);
-
+                System.err.println("Error: La carta no se encontró en la mano del jugador de la máquina.");
             }
-            unoMachine();
-            System.out.println("\n Cartas de la máquina: ");
-            machinePlayer.printCardsPlayer();
-        }
+        });
     }
 
-    public void unoMachine() {
-        if (machinePlayer.getCardsPlayer().size() == 1) {
-        }
+    public void updateMachineCardsView() {
+        Platform.runLater(() -> {
+            gridPaneCardsMachine.getChildren().clear();
+            Card[] currentVisibleCardsMachine = getCurrentVisibleCardsMachine(posInitCardToShow);
+            System.out.println("Número de cartas visibles de la máquina: " + currentVisibleCardsMachine.length);
+            for (int i = 0; i < currentVisibleCardsMachine.length; i++) {
+                String backImagePath = EISCUnoEnum.CARD_UNO.getFilePath();
+                Card cardBack = new Card(backImagePath, "BACK", "NONE");
+                ImageView cardBackImageView = cardBack.getCard();
+                cardBackImageView.setFitWidth(100);
+                cardBackImageView.setPreserveRatio(true);
+                gridPaneCardsMachine.add(cardBackImageView, i, 0);
+            }
+        });
     }
-    public void isWildCards(Card card, Player player){
-        if (card.getValue() == "SKIP"){
-            run();
-            System.out.println("\nLa maquina utilizo una carta de Skip.\n");
-        } else if (card.getValue() =="RESERVE") {
-            run();
-            setHasPlayerPlayed(false);
-            System.out.println("\nLa maquina utilizo una carta de Reverse.\n");
-        } else if (card.getValue() =="TWO_WILD_DRAW") {
-            gameUno.eatCard(player, 2);
-            System.out.println("\nLa maquina utilizo  un TWO_WILD_DRAW, " +player.getTypePlayer()+ " comio 2 cartas\n");
-        } else if (card.getValue() =="WILD") {
 
-        }else if (card.getValue() == "FOUR_WILD_DRAW" || card.getValue() =="WILD") {
+    private Card[] getCurrentVisibleCardsMachine(int posInitCardToShow) {
+        int totalCards = machinePlayer.getCardsPlayer().size();
+        int numVisibleCards = Math.min(4, totalCards - posInitCardToShow);
+        Card[] cards = new Card[numVisibleCards];
+        for (int i = 0; i < numVisibleCards; i++) {
+            cards[i] = machinePlayer.getCard(posInitCardToShow + i);
         }
-        else {
-            setHasPlayerPlayed(true);
-        }
+        return cards;
     }
-    public void fourWild(){
-        String currentColor = "NONE";
-        String currentValue = "FOUR_WILD_DRAW";
-        Card playableCard = machinePlayer.findPlayableCard(currentColor, currentValue);
 
-
+    private Card chooseRandomCard() {
+        int index = (int) (Math.random() * machinePlayer.getCardsPlayer().size());
+        return machinePlayer.getCard(index);
     }
+
     public void setHasPlayerPlayed(boolean hasPlayerPlayed) {
         this.hasPlayerPlayed = hasPlayerPlayed;
+    }
+
+    private String chooseRandomColor() {
+        String[] colors = {"RED", "BLUE", "GREEN", "YELLOW"};
+        int numColor = (int) (Math.random() * colors.length);
+        return colors[numColor];
+    }
+
+    private void createAlert(String text) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Información");
+            alert.setHeaderText(null);
+            alert.setContentText(text);
+            alert.showAndWait();
+        });
+    }
+    public boolean isRunning(boolean running) {
+        return running;
     }
 }

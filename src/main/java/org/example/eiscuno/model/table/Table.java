@@ -38,4 +38,14 @@ public class Table {
         }
         return this.cardsTable.get(this.cardsTable.size()-1);
     }
+
+    public Boolean isValidCard(Card card) {
+        Card currentCardOnTheTable = getCurrentCardOnTheTable();
+        if (card.getColor().equals(currentCardOnTheTable.getColor()) || card.getValue().equals(currentCardOnTheTable.getValue())
+                || card.getValue().equals("W") || card.getValue().equals("+4") || card.getColor().equals("BLACK")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

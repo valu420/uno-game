@@ -1,6 +1,7 @@
 package org.example.eiscuno.model.player;
 
 import org.example.eiscuno.model.card.Card;
+import org.example.eiscuno.model.deck.Deck;
 
 import java.util.ArrayList;
 
@@ -56,12 +57,19 @@ public class Player implements IPlayer {
      * @return The card at the specified index in the player's hand.
      */
     @Override
-    public Card getCard(int index) {
+    public Card getCard(int index){
         return cardsPlayer.get(index);
     }
 
     public String getTypePlayer() {
         return typePlayer;
+    }
+
+    @Override
+    public void drawCards(Deck deck, int numberOfCards) {
+        for (int i = 0; i < numberOfCards; i++) {
+            addCard(deck.takeCard());
+        }
     }
 
     /**
@@ -71,16 +79,16 @@ public class Player implements IPlayer {
      * @param currentValue the value of the current card on the table
      * @return a playable card, or null if no card can be played
      */
-    public Card findPlayableCard(String currentColor, String currentValue) {
+    public boolean findPlayableCard(String currentColor, String currentValue) {
         for (Card card : cardsPlayer) {
-            if (card.getColor() != null && card.getValue() != null) {
-                if (card.getColor().equals(currentColor) || card.getValue().equals(currentValue)) {
-                    return card;
-                }
+            if (card.getColor().equals(currentColor) || card.getValue().equals(currentValue)
+                    || card.getValue().equals("W") || card.getValue().equals("+4")) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
+
     public void printCardsPlayer() {
         for (Card card : this.cardsPlayer) {
             System.out.println(card);

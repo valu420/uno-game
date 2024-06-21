@@ -52,44 +52,54 @@ public class Deck {
     }
 
     private String getCardValue(String name) {
-        if (name.matches(".*_[0-9]$")) {
-            return name.substring(name.length() - 1);
-        } else if(name.startsWith("SKIP")){
-            return "SKIP";
-        } else if (name.startsWith("RESERVE")) {
-            return "RESERVE";
-        } else if (name.startsWith("TWO_WILD_DRAW")) {
-            return "TWO_WILD_DRAW";
-        } else if (name.equals("FOUR_WILD_DRAW")) {
-            return "FOUR_WILD_DRAW";
+        if (name.endsWith("0")){
+            return "0";
+        } else if (name.endsWith("1")){
+            return "1";
+        } else if (name.endsWith("2")){
+            return "2";
+        } else if (name.endsWith("3")){
+            return "3";
+        } else if (name.endsWith("4")){
+            return "4";
+        } else if (name.endsWith("5")){
+            return "5";
+        } else if (name.endsWith("6")){
+            return "6";
+        } else if (name.endsWith("7")){
+            return "7";
+        } else if (name.endsWith("8")){
+            return "8";
+        } else if (name.endsWith("9")){
+            return "9";
+        } else if (name.startsWith("TWO_WILD_DRAW_")) {
+            return "+2";
+        } else if (name.startsWith("RESERVE_")) {
+            return "R";
+        } else if (name.contains("SKIP_")) {
+            return "S";
         } else if (name.equals("WILD")) {
-            return "WILD";
-        } else {
+            return "W";
+        } else if (name.equals("FOUR_WILD_DRAW")) {
+            return "+4";
+        }
+        else {
             return null;
         }
+
     }
 
     private String getCardColor(String name){
-        if(name.startsWith("GREEN")) {
+        if(name.contains("GREEN")){
             return "GREEN";
-        } else if (name.startsWith("YELLOW")) {
+        } else if(name.contains("YELLOW")){
             return "YELLOW";
-        } else if (name.startsWith("BLUE")) {
+        } else if(name.contains("BLUE")){
             return "BLUE";
-        } else if (name.startsWith("RED")) {
+        } else if(name.contains("RED")){
             return "RED";
-        } else if (name.endsWith("GREEN")){
-            return "GREEN";
-        } else if(name.endsWith("YELLOW")){
-            return "YELLOW";
-        } else if(name.endsWith("BLUE")){
-            return "BLUE";
-        } else if(name.endsWith("RED")){
-            return "RED";
-        } else if (name.equals("FOUR_WILD_DRAW") || name.equals("WILD")) {
-            return "NONE";
         } else {
-            return null;
+            return "BLACK";
         }
     }
 
