@@ -89,6 +89,10 @@ public class Player implements IPlayer {
         return false;
     }
 
+    /**
+     * Prints all cards currently held by the player.
+     * Each card in the player's hand is printed to the console.
+     */
     public void printCardsPlayer() {
         for (Card card : this.cardsPlayer) {
             System.out.println(card);
