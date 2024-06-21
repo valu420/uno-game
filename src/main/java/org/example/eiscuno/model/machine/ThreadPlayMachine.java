@@ -36,7 +36,7 @@ public class ThreadPlayMachine extends Thread {
         while (true) {
             if (hasPlayerPlayed) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -46,6 +46,7 @@ public class ThreadPlayMachine extends Thread {
                         System.out.println("La maquina se comio 1 carta");
                         System.out.println(machinePlayer.getCardsPlayer().size());
                         hasMachinePlayedCard = true;
+                        updateMachineCardsView();
                     } else {
                         Card card = chooseRandomCard();
                         if (this.table.isValidCard(card)) {
@@ -83,24 +84,27 @@ public class ThreadPlayMachine extends Thread {
             int cardIndex = machinePlayer.getCardsPlayer().indexOf(card);
             if (cardIndex != -1) {
                 machinePlayer.removeCard(cardIndex);
-                printCardsMachine();
+                updateMachineCardsView();
             } else {
                 System.err.println("Error: La carta no se encontró en la mano del jugador de la máquina.");
             }
         });
     }
 
-    public void printCardsMachine() {
-        gridPaneCardsMachine.getChildren().clear();
-        Card[] currentVisibleCardsMachine = getCurrentVisibleCardsMachine(posInitCardToShow);
-        for (int i = 0; i < currentVisibleCardsMachine.length; i++) {
-            String backImagePath = EISCUnoEnum.CARD_UNO.getFilePath();
-            Card cardBack = new Card(backImagePath, "BACK", "NONE");
-            ImageView cardBackImageView = cardBack.getCard();
-            cardBackImageView.setFitWidth(100);
-            cardBackImageView.setPreserveRatio(true);
-            gridPaneCardsMachine.add(cardBackImageView, i, 0);
-        }
+    public void updateMachineCardsView() {
+        Platform.runLater(() -> {
+            gridPaneCardsMachine.getChildren().clear();
+            Card[] currentVisibleCardsMachine = getCurrentVisibleCardsMachine(posInitCardToShow);
+            System.out.println("Número de cartas visibles de la máquina: " + currentVisibleCardsMachine.length);
+            for (int i = 0; i < currentVisibleCardsMachine.length; i++) {
+                String backImagePath = EISCUnoEnum.CARD_UNO.getFilePath();
+                Card cardBack = new Card(backImagePath, "BACK", "NONE");
+                ImageView cardBackImageView = cardBack.getCard();
+                cardBackImageView.setFitWidth(100);
+                cardBackImageView.setPreserveRatio(true);
+                gridPaneCardsMachine.add(cardBackImageView, i, 0);
+            }
+        });
     }
 
     private Card[] getCurrentVisibleCardsMachine(int posInitCardToShow) {

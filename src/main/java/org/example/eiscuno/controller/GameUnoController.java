@@ -61,7 +61,7 @@ public class GameUnoController {
 
         threadPlayMachine = new ThreadPlayMachine(this.deck, this.humanPlayer,this.table, this.machinePlayer, this.tableImageView,this.gridPaneCardsMachine);
         threadPlayMachine.start();
-        Platform.runLater(() -> threadPlayMachine.printCardsMachine());
+        Platform.runLater(() -> threadPlayMachine.updateMachineCardsView());
     }
 
     /**
