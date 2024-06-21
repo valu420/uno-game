@@ -58,11 +58,24 @@ public class ThreadPlayMachine extends Thread {
                             if (card.getValue().equals("+2")) {
                                 humanPlayer.drawCards(deck, 2);
                             }
-                            putCardOnTheTable(card);
-                            machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
-                            hasPlayerPlayed = false;
-                            hasMachinePlayedCard = true;
-                            System.out.println(machinePlayer.getCardsPlayer().size());
+
+                            if (!card.getValue().equals("R") && !card.getValue().equals("S")){
+                                putCardOnTheTable(card);
+                                machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
+                                hasPlayerPlayed = false;
+                                hasMachinePlayedCard = true;
+                                System.out.println(machinePlayer.getCardsPlayer().size());
+                            }
+                            else if(card.getValue().equals("R") || card.getValue().equals("S")) {
+                                putCardOnTheTable(card);
+                                machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
+                                System.out.println("La maquina ha jugado una carta "+card.getValue()+"\nVolvera a tirar una carta");
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
                 }

@@ -1,7 +1,9 @@
 package org.example.eiscuno.controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -12,6 +14,7 @@ import org.example.eiscuno.model.machine.ThreadPlayMachine;
 import org.example.eiscuno.model.machine.ThreadSingUNOMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
@@ -88,8 +91,13 @@ public class GameUnoController {
                      }
                      tableImageView.setImage(card.getImage());
                         humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                        threadPlayMachine.setHasPlayerPlayed(true);
-                        printCardsHumanPlayer();
+                     if (card.getValue().equals("R") || card.getValue().equals("S")) {
+                         printCardsHumanPlayer();
+                         alertInformation.createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta");
+                     } else {
+                         threadPlayMachine.setHasPlayerPlayed(true);
+                         printCardsHumanPlayer();
+                     }
                     } else {
                         System.out.println("No puedes jugar esta carta");
                     }
@@ -179,4 +187,5 @@ public class GameUnoController {
             humanPlayer.printCardsPlayer();
         }
     }
+
 }

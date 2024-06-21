@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.unoenum.EISCUnoEnum;
+import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
@@ -45,7 +46,7 @@ public class PopUpStage extends Stage {
             newContent.setAlignment(Pos.CENTER);
             gridPane.add(newContent, 0, 0);
             popupStage.close();
-            createAlert("El color de la partida ha cambiado a AZUL");
+            alertInformation.createAlert("El color de la partida ha cambiado a AZUL");
         });
 
         RED.setOnAction(e -> {
@@ -55,7 +56,7 @@ public class PopUpStage extends Stage {
             newContent.setAlignment(Pos.CENTER);
             gridPane.add(newContent, 0, 0);
             popupStage.close();
-            createAlert("El color de la partida ha cambiado a ROJO");
+            alertInformation.createAlert("El color de la partida ha cambiado a ROJO");
         });
 
         YELLOW.setOnAction(e -> {
@@ -65,7 +66,7 @@ public class PopUpStage extends Stage {
             newContent.setAlignment(Pos.CENTER);
             gridPane.add(newContent, 0, 0);
             popupStage.close();
-            createAlert("El color de la partida ha cambiado a AMARILLO");
+            alertInformation.createAlert("El color de la partida ha cambiado a AMARILLO");
         });
 
         GREEN.setOnAction(e -> {
@@ -75,7 +76,7 @@ public class PopUpStage extends Stage {
             newContent.setAlignment(Pos.CENTER);
             gridPane.add(newContent, 0, 0);
             popupStage.close();
-            createAlert("El color de la partida ha cambiado a VERDE");
+            alertInformation.createAlert("El color de la partida ha cambiado a VERDE");
         });
 
         GridPane gridPane = new GridPane();
@@ -93,13 +94,13 @@ public class PopUpStage extends Stage {
         popupStage.showAndWait();
     }
 
-    private void createAlert(String text){
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Información");
-            alert.setHeaderText(null);
-            alert.setContentText(text);
-            alert.showAndWait();
-        });
-    }
+//    private void createAlert(String text){
+//        Platform.runLater(() -> {
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setTitle("Información");
+//            alert.setHeaderText(null);
+//            alert.setContentText(text);
+//            alert.showAndWait();
+//        });
+//    }
 }
