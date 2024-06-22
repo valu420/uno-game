@@ -71,7 +71,7 @@ public class ThreadPlayMachine extends Thread {
         while (running) {
             if (hasPlayerPlayed) {
                 try {
-                    Thread.sleep(1000); // Simulate thinking time for the machine
+                    Thread.sleep(1000); // Simula el tiempo de pensamiento de la máquina
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -104,19 +104,16 @@ public class ThreadPlayMachine extends Thread {
                             }
                         }
                     }
+                }
 
+                // Verifica si la máquina debe ser penalizada por no decir "UNO"
+                if (machinePlayer.getCardsPlayer().size() == 1 && !threadSingUNOMachine.isUnoCalled()) {
+                    createAlert("La máquina no ha dicho UNO y será penalizada con 2 cartas", "Penalización");
+                    machinePlayer.drawCards(deck, 2);
+                    Platform.runLater(this::updateMachineCardsView);
                 }
-                if (!threadSingUNOMachine.isUnoCalled()) {
-                    // Verifica si el jugador humano tiene una carta y no ha dicho "UNO"
-                    if (humanPlayer.getCardsPlayer().size() == 1) {
-                        Platform.runLater(() -> {
-                            controller.onHandleTakeCard(null); // Llama al método de tomar carta del jugador humano
-                        });
-                        System.out.println("El jugador no ha dicho UNO y ha sido penalizado con una carta.");
-                    }
-                }
+
                 hasPlayerPlayed = false;
-
             }
         }
     }
@@ -144,7 +141,9 @@ public class ThreadPlayMachine extends Thread {
          * Informs the ThreadPlayMachine instance that the human player has called "UNO".
          */
         public void onUnoCalled () {
-            // Aquí puedes realizar acciones si es necesario cuando el jugador dice "UNO"
+            Platform.runLater(() -> {
+                createAlert("La máquina ha dicho UNO", "UNO!");
+            });
         }
 
         /**

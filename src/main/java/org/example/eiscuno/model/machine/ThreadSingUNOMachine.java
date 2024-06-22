@@ -34,11 +34,10 @@ public class ThreadSingUNOMachine implements Runnable{
      * The run method continuously checks if the machine player has one card left and calls "UNO".
      */
     @Override
-    public void run(){
-        while (true){
+    public void run() {
+        while (true) {
             try {
-                // Sleep for a random interval between 0 and 5 seconds.
-                Thread.sleep((long) (Math.random() * 5000));
+                Thread.sleep(5000); // Duerme por un intervalo aleatorio entre 0 y 5 segundos.
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -54,7 +53,7 @@ public class ThreadSingUNOMachine implements Runnable{
             System.out.println("UNO");
             unoCalled = true;
             if (threadPlayMachine != null) {
-                threadPlayMachine.onUnoCalled(); // Informa a ThreadPlayMachine que se ha llamado "UNO"
+                threadPlayMachine.onUnoCalled();
             }
         }
     }
