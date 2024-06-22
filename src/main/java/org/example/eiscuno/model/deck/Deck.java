@@ -11,12 +11,14 @@ import java.util.Stack;
  */
 public class Deck {
     private Stack<Card> deckOfCards;
+    private Stack<Card> discardPile;
 
     /**
      * Constructs a new deck of Uno cards and initializes it.
      */
     public Deck() {
         deckOfCards = new Stack<>();
+        discardPile = new Stack<>();
         initializeDeck();
     }
 
@@ -34,13 +36,42 @@ public class Deck {
                     cardEnum.name().startsWith("TWO_WILD_DRAW_") ||
                     cardEnum.name().equals("FOUR_WILD_DRAW") ||
                     cardEnum.name().equals("WILD")) {
-                Card card = new Card(cardEnum.getFilePath(), getCardValue(cardEnum.name()), getCardColor(cardEnum.name()));
-                deckOfCards.push(card);
+
+                String value = getCardValue(cardEnum.name());
+                String color = getCardColor(cardEnum.name());
+
+                if (value != null && color != null) {
+                    Card card = new Card(cardEnum.getFilePath(), value, color);
+                    deckOfCards.push(card);
+                } else {
+                    System.err.println("Invalid card configuration: " + cardEnum.name());
+                }
             }
         }
         Collections.shuffle(deckOfCards);
     }
 
+    /**
+     * Returns the discard pile.
+     * @return the discard pile
+     */
+    public Stack<Card> getDiscardPile() {
+        return discardPile;
+    }
+
+    /**
+     * Returns the deck of cards.
+     * @return the deck of cards
+     */
+    public Stack<Card> getDeckOfCards() {
+        return deckOfCards;
+    }
+
+    /**
+     * Returns the value of the card based on its name.
+     * @param name the name of the card
+     * @return the value of the card
+     */
     private String getCardValue(String name) {
         if (name.endsWith("0")){
             return "0";
@@ -62,45 +93,94 @@ public class Deck {
             return "8";
         } else if (name.endsWith("9")){
             return "9";
-        } else {
+        } else if (name.startsWith("TWO_WILD_DRAW_")) {
+            return "+2";
+        } else if (name.startsWith("RESERVE_")) {
+            return "R";
+        } else if (name.contains("SKIP_")) {
+            return "S";
+        } else if (name.equals("WILD")) {
+            return "W";
+        } else if (name.equals("FOUR_WILD_DRAW")) {
+            return "+4";
+        }
+        else {
             return null;
         }
 
     }
-
+    /**
+     * Returns the color of the card based on its name.
+     * @param name the name of the card
+     * @return the color of the card
+     */
     private String getCardColor(String name){
-        if(name.startsWith("GREEN")){
+        if(name.contains("GREEN")){
             return "GREEN";
-        } else if(name.startsWith("YELLOW")){
+        } else if(name.contains("YELLOW")){
             return "YELLOW";
-        } else if(name.startsWith("BLUE")){
+        } else if(name.contains("BLUE")){
             return "BLUE";
-        } else if(name.startsWith("RED")){
+        } else if(name.contains("RED")){
             return "RED";
+        } else if (name.equals("FOUR_WILD_DRAW") || name.equals("WILD")) {
+            return "NONE";
         } else {
-            return null;
+            return "BLACK";
         }
     }
 
     /**
      * Takes a card from the top of the deck.
-     *
      * @return the card from the top of the deck
      * @throws IllegalStateException if the deck is empty
      */
     public Card takeCard() {
         if (deckOfCards.isEmpty()) {
-            throw new IllegalStateException("No hay más cartas en el mazo.");
+            refillDeckFromDiscardPile();
+            if (deckOfCards.isEmpty()) {
+                throw new IllegalStateException("No hay más cartas en el mazo.");
+            }
         }
         return deckOfCards.pop();
     }
 
     /**
      * Checks if the deck is empty.
-     *
      * @return true if the deck is empty, false otherwise
      */
     public boolean isEmpty() {
         return deckOfCards.isEmpty();
+    }
+
+    /**
+     * Refill the deck from the discard pile and shuffles it.
+     */
+    public void refillDeckFromDiscardPile() {
+        if (discardPile.isEmpty()) {
+            return;
+        }
+        Card lastDiscardedCard = discardPile.pop();
+        while (!discardPile.isEmpty()) {
+            deckOfCards.push(discardPile.pop());
+        }
+        discardPile.push(lastDiscardedCard);
+        Collections.shuffle(deckOfCards);
+    }
+
+    /**
+     * Adds a card to the discard pile.
+     * @param card the card to be added to the discard pile
+     */
+    public void discardCard(Card card) {
+        discardPile.push(card);
+    }
+
+    /**
+     * Adds a card to the deck.
+     * @param card the card to be added to the deck
+     */
+    public void addCardToDeck(Card card) {
+        deckOfCards.push(card);
     }
 }

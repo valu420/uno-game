@@ -1,9 +1,17 @@
 package org.example.eiscuno.model.game;
 
+import javafx.application.Platform;
+import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
+import org.example.eiscuno.model.machine.ThreadPlayMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.GameUnoStage;
+import org.example.eiscuno.view.PopUpStage;
+import org.example.eiscuno.view.alert.alertInformation;
+
+import java.io.IOException;
 
 /**
  * Represents a game of Uno.
@@ -15,10 +23,10 @@ public class GameUno implements IGameUno {
     private Player machinePlayer;
     private Deck deck;
     private Table table;
+    private ThreadPlayMachine threadPlayMachine;
 
     /**
      * Constructs a new GameUno instance.
-     *
      * @param humanPlayer   The human player participating in the game.
      * @param machinePlayer The machine player participating in the game.
      * @param deck          The deck of cards used in the game.
@@ -47,31 +55,90 @@ public class GameUno implements IGameUno {
     }
 
     /**
-     * Allows a player to draw a specified number of cards from the deck.
-     *
-     * @param player        The player who will draw cards.
-     * @param numberOfCards The number of cards to draw.
+     * Draws the initial card for the table from the deck.
+     * @param table      The table where the initial card is placed.
+     * @param imageView  The ImageView to display the initial card.
      */
-    @Override
-    public void eatCard(Player player, int numberOfCards) {
-        for (int i = 0; i < numberOfCards; i++) {
-            player.addCard(this.deck.takeCard());
+    public void initialCard(Table table, ImageView imageView){
+        Card initialCard = null;
+        boolean isValidCardToStart = false;
+        while (!isValidCardToStart) {
+            Card card = deck.takeCard();
+            String value = card.getValue();
+            if (!(value.matches("[0-9]"))){
+                deck.addCardToDeck(card);
+            }
+            else{
+                initialCard = card;
+                isValidCardToStart = true;
+            }
         }
+        table.addCardOnTheTable(initialCard);
+        imageView.setImage(initialCard.getImage());
     }
 
     /**
      * Places a card on the table during the game.
-     *
+     * The card is added to the table and the appropriate actions are taken based on the card played.
      * @param card The card to be placed on the table.
      */
     @Override
-    public void playCard(Card card) {
+    public void playCard(Card card) throws IOException {
+        String playerType = humanPlayer.getTypePlayer();
+        String playerMachime = machinePlayer.getTypePlayer();
         this.table.addCardOnTheTable(card);
+        if (card.getValue().equals("W")){
+            new PopUpStage(card);
+        }
+        if (card.getValue().equals("+4")){
+            machinePlayer.drawCards(deck, 4);
+            new PopUpStage(card);
+        }
+        if (card.getValue().equals("+2")){
+            machinePlayer.drawCards(deck, 2);
+        }
+        postMoveActions(playerType);
+        postMoveActions(playerMachime);
+
     }
 
     /**
+     * Performs actions after a move.
+     * Checks if the game is over and displays a message if a player has won.
+     * @param playerType The type of player who made the move.
+     */
+    public void postMoveActions(String playerType) {
+
+        if (playerType.equals(humanPlayer.getTypePlayer())) {
+            if (humanPlayer.getCardsPlayer().isEmpty()) {
+                alertInformation.createAlert("Felicidades haz ganado", "Victoria!");
+                isGameOver();
+            }
+        } else if (playerType.equals(machinePlayer.getTypePlayer())) {
+            if (machinePlayer.getCardsPlayer().isEmpty()) {
+                alertInformation.createAlert("La maquina ha ganado", "Victoria");
+                isGameOver();
+            }
+        }
+    }
+
+    /**
+     * Checks if the game is over and ends the game.
+     * @return Always returns null.
+     */
+   @Override
+   public Boolean isGameOver() {
+       threadPlayMachine.isRunning(false);
+       System.out.println("\nFin de la partida!\n");
+       Platform.runLater(() -> {
+           GameUnoStage.deleteInstance();
+       });
+       return null;
+   }
+
+
+    /**
      * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.
-     *
      * @param playerWhoSang The player who shouted "Uno".
      */
     @Override
@@ -85,7 +152,6 @@ public class GameUno implements IGameUno {
 
     /**
      * Retrieves the current visible cards of the human player starting from a specific position.
-     *
      * @param posInitCardToShow The initial position of the cards to show.
      * @return An array of cards visible to the human player.
      */
@@ -103,12 +169,19 @@ public class GameUno implements IGameUno {
     }
 
     /**
-     * Checks if the game is over.
-     *
-     * @return True if the deck is empty, indicating the game is over; otherwise, false.
+     * Retrieves the current visible cards of the machine player.
+     * @return an array of cards that are currently visible to the machine player
      */
     @Override
-    public Boolean isGameOver() {
-        return null;
+    public Card[] getCurrentVisibleCardsMachinePlayer(int posInitCardToShow) {
+        int totalCards = this.machinePlayer.getCardsPlayer().size();
+        int numVisibleCards = Math.min(4, totalCards - posInitCardToShow);
+
+        Card[] cards = new Card[numVisibleCards];
+
+        for (int i = 0; i < numVisibleCards; i++) {
+            cards[i] = this.machinePlayer.getCard(posInitCardToShow + i);
+        }
+        return cards;
     }
 }

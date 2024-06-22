@@ -19,7 +19,6 @@ public class Table {
 
     /**
      * Adds a card to the table.
-     *
      * @param card The card to be added to the table.
      */
     public void addCardOnTheTable(Card card){
@@ -28,7 +27,6 @@ public class Table {
 
     /**
      * Retrieves the current card on the table.
-     *
      * @return The card currently on the table.
      * @throws IndexOutOfBoundsException if there are no cards on the table.
      */
@@ -37,5 +35,20 @@ public class Table {
             throw new IndexOutOfBoundsException("There are no cards on the table.");
         }
         return this.cardsTable.get(this.cardsTable.size()-1);
+    }
+
+    /**
+     * Checks if a given card is valid to play on the current card on the table.
+     * @param card The card to check for validity.
+     * @return True if the card is valid to play, otherwise false.
+     */
+    public Boolean isValidCard(Card card) {
+        Card currentCardOnTheTable = getCurrentCardOnTheTable();
+        if (card.getColor().equals(currentCardOnTheTable.getColor()) || card.getValue().equals(currentCardOnTheTable.getValue())
+                || card.getValue().equals("W") || card.getValue().equals("+4") || card.getColor().equals("BLACK")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
