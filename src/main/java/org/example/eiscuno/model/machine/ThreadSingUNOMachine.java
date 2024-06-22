@@ -55,6 +55,9 @@ public class ThreadSingUNOMachine implements Runnable{
                 threadPlayMachine.onUnoCalled();
             }
         }
+        else{
+            unoCalled = false;
+        }
     }
     /**
      * Checks if the "UNO" has been called by the human player.

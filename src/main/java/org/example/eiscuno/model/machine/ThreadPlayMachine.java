@@ -91,12 +91,16 @@ public class ThreadPlayMachine extends Thread {
                             handleSpecialCards(card);
                             if (!card.getValue().equals("R") && !card.getValue().equals("S") && !card.getValue().equals("+2") && !card.getValue().equals("+4")){
                                 putCardOnTheTable(card);
+                                threadSingUNOMachine.checkUNO();
+                                checkIsGameOver();
                                 Platform.runLater(this::updateMachineCardsView);
                                 machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
                                 hasPlayerPlayed = false;
                                 hasMachinePlayedCard = true;
                             } else if (card.getValue().equals("R") || card.getValue().equals("S") || card.getValue().equals("+2") || card.getValue().equals("+4")){
                                 putCardOnTheTable(card);
+                                threadSingUNOMachine.checkUNO();
+                                checkIsGameOver();
                                 Platform.runLater(this::updateMachineCardsView);
                                 machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
                                 try {
@@ -105,8 +109,8 @@ public class ThreadPlayMachine extends Thread {
                                     e.printStackTrace();
                                 }
                             }
-                            checkIsGameOver();
                             threadSingUNOMachine.checkUNO();
+                            checkIsGameOver();
                         }
                     }
                 }

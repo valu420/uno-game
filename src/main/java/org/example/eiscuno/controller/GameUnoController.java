@@ -1,11 +1,14 @@
 package org.example.eiscuno.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.game.GameUno;
@@ -15,6 +18,9 @@ import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 import org.example.eiscuno.view.GameUnoStage;
 import org.example.eiscuno.view.alert.alertInformation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -38,6 +44,8 @@ public class GameUnoController {
     private ThreadPlayMachine threadPlayMachine;
     private boolean hasSungOne = false;
     private long playerTime;
+    private Timeline unoTimer;
+
 
     /**
      * Initializes the controller.
@@ -149,12 +157,24 @@ public class GameUnoController {
 
     private void checkIsUno(){
         if(humanPlayer.getCardsPlayer().size() == 1){
-            playerTime = System.currentTimeMillis();
-            if(playerTime < System.currentTimeMillis() + 5000 && !hasSungOne){
-                createAlert("Has tardado demasiado en decir UNO, penalización de 2 cartas", "Penalización");
-                humanPlayer.drawCards(deck, 2);
-                printCardsHumanPlayer();
+            if(unoTimer == null) {
+                unoTimer = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+                    if(!hasSungOne){
+                        createAlert("Has tardado demasiado en decir UNO, penalización de 2 cartas", "Penalización");
+                        humanPlayer.drawCards(deck, 2);
+                        printCardsHumanPlayer();
+                    }
+                    unoTimer = null; // Reset the timer
+                }));
+                unoTimer.setCycleCount(1);
+                unoTimer.play();
             }
+        } else {
+            if(unoTimer != null) {
+                unoTimer.stop();
+                unoTimer = null;
+            }
+            hasSungOne = false;
         }
     }
 
