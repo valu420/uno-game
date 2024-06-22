@@ -1,12 +1,16 @@
 package org.example.eiscuno.model.game;
 
 
+import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
+import org.example.eiscuno.model.machine.ThreadPlayMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.GameUnoStage;
 import org.example.eiscuno.view.PopUpStage;
+import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
@@ -20,6 +24,7 @@ public class GameUno implements IGameUno {
     private Player machinePlayer;
     private Deck deck;
     private Table table;
+    private ThreadPlayMachine threadPlayMachine;
 
     /**
      * Constructs a new GameUno instance.
@@ -51,6 +56,12 @@ public class GameUno implements IGameUno {
         }
     }
 
+    /**
+     * Draws the initial card for the table from the deck.
+     *
+     * @param table      The table where the initial card is placed.
+     * @param imageView  The ImageView to display the initial card.
+     */
     public void initialCard(Table table, ImageView imageView){
         Card initialCard = null;
         boolean isValidCardToStart = false;
@@ -93,19 +104,42 @@ public class GameUno implements IGameUno {
         postMoveActions(playerMachime);
 
     }
-//game over funcion
-    private void postMoveActions(String playerType) {
+
+    /**
+     * Performs actions after a move.
+     *
+     * @param playerType The type of player who made the move.
+     */
+    public void postMoveActions(String playerType) {
+
         if (playerType.equals(humanPlayer.getTypePlayer())) {
             if (humanPlayer.getCardsPlayer().isEmpty()) {
-                System.out.println("\nFin de la partida!\n");
+                alertInformation.createAlert("Felicidades haz ganado", "Victoria!");
                 isGameOver();
-            } else if (playerType.equals(machinePlayer.getTypePlayer())) {
-                if (machinePlayer.getCardsPlayer().isEmpty()) {
-                    System.out.println("\nFin de la partida!\n");
-                    isGameOver();
-                }
             }
-    }    }
+        } else if (playerType.equals(machinePlayer.getTypePlayer())) {
+            if (machinePlayer.getCardsPlayer().isEmpty()) {
+                alertInformation.createAlert("La maquina ha ganado", "Victoria");
+                isGameOver();
+            }
+        }
+    }
+
+    /**
+     * Checks if the game is over and ends the game.
+     *
+     * @return Always returns null.
+     */
+   @Override
+   public Boolean isGameOver() {
+       threadPlayMachine.isRunning(false);
+       System.out.println("\nFin de la partida!\n");
+       Platform.runLater(() -> {
+           GameUnoStage.deleteInstance();
+       });
+       return null;
+   }
+
 
     /**
      * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.
@@ -139,14 +173,22 @@ public class GameUno implements IGameUno {
 
         return cards;
     }
-
     /**
-     * Checks if the game is over.
+     * Retrieves the current visible cards of the machine player.
      *
-     * @return True if the deck is empty, indicating the game is over; otherwise, false.
+     * @return an array of cards that are currently visible to the machine player
      */
     @Override
-    public Boolean isGameOver() {
-        return null;
+    public Card[] getCurrentVisibleCardsMachinePlayer(int posInitCardToShow) {
+        int totalCards = this.machinePlayer.getCardsPlayer().size();
+        int numVisibleCards = Math.min(4, totalCards - posInitCardToShow);
+
+        Card[] cards = new Card[numVisibleCards];
+
+        for (int i = 0; i < numVisibleCards; i++) {
+            cards[i] = this.machinePlayer.getCard(posInitCardToShow + i);
+        }
+
+        return cards;
     }
 }

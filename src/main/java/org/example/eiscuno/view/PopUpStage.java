@@ -14,11 +14,22 @@ import javafx.stage.StageStyle;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.unoenum.EISCUnoEnum;
 import org.example.eiscuno.view.alert.alertInformation;
+import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
+/**
+ * This class represents a custom pop-up stage for selecting a color for a card game.
+ * It extends Stage and creates a modal utility stage to choose and display color options.
+ */
 public class PopUpStage extends Stage {
     private GridPane gridPane;
+
+    /**
+     * Constructor for PopUpStage.
+     * @param card The card object whose color is to be changed based on user selection.
+     * @throws IOException If an I/O exception occurs while creating the stage.
+     */
     public PopUpStage(Card card) throws IOException {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
@@ -26,6 +37,7 @@ public class PopUpStage extends Stage {
 
         popupStage.setTitle("¡Cambio de color!");
 
+        // Components for selecting color
         Label label = new Label("Escoge el color al que quieres cambiar la partida");
         Button BLUE = new Button("AZUL");
         Button RED = new Button("ROJO");
@@ -39,6 +51,7 @@ public class PopUpStage extends Stage {
 
         gridPane = new GridPane();
 
+        // Event handlers for color buttons
         BLUE.setOnAction(e -> {
             card.setColor("BLUE");
             gridPane.getChildren().clear();

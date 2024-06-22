@@ -39,6 +39,12 @@ public class Table {
         return this.cardsTable.get(this.cardsTable.size()-1);
     }
 
+    /**
+     * Checks if a given card is valid to play on the current card on the table.
+     *
+     * @param card The card to check for validity.
+     * @return True if the card is valid to play, otherwise false.
+     */
     public Boolean isValidCard(Card card) {
         Card currentCardOnTheTable = getCurrentCardOnTheTable();
         if (card.getColor().equals(currentCardOnTheTable.getColor()) || card.getValue().equals(currentCardOnTheTable.getValue())

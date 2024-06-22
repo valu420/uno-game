@@ -59,6 +59,12 @@ public class Deck {
         return deckOfCards;
     }
 
+    /**
+     * Returns the value of the card based on its name.
+     *
+     * @param name the name of the card
+     * @return the value of the card
+     */
     private String getCardValue(String name) {
         if (name.endsWith("0")){
             return "0";
@@ -96,7 +102,12 @@ public class Deck {
         }
 
     }
-
+    /**
+     * Returns the color of the card based on its name.
+     *
+     * @param name the name of the card
+     * @return the color of the card
+     */
     private String getCardColor(String name){
         if(name.contains("GREEN")){
             return "GREEN";
@@ -106,6 +117,8 @@ public class Deck {
             return "BLUE";
         } else if(name.contains("RED")){
             return "RED";
+        } else if (name.equals("FOUR_WILD_DRAW") || name.equals("WILD")) {
+            return "NONE";
         } else {
             return "BLACK";
         }
@@ -129,6 +142,7 @@ public class Deck {
 
     /**
      * Checks if the deck is empty.
+     *
      * @return true if the deck is empty, false otherwise
      */
     public boolean isEmpty() {
@@ -136,7 +150,7 @@ public class Deck {
     }
 
     /**
-     * Refill the deck from the discard pile and shuffle it.
+     * Refill the deck from the discard pile and shuffles it.
      */
     public void refillDeckFromDiscardPile() {
         if (discardPile.isEmpty()) {
@@ -152,6 +166,7 @@ public class Deck {
 
     /**
      * Adds a card to the discard pile.
+     *
      * @param card the card to be added to the discard pile
      */
     public void discardCard(Card card) {

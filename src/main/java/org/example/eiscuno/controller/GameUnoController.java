@@ -14,13 +14,12 @@ import org.example.eiscuno.model.machine.ThreadPlayMachine;
 import org.example.eiscuno.model.machine.ThreadSingUNOMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.GameUnoStage;
+import org.example.eiscuno.view.alert.alertInformation;
 import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
-/**
- * Controller class for the Uno game.
- */
 public class GameUnoController {
 
     @FXML
@@ -37,6 +36,7 @@ public class GameUnoController {
     private int posInitCardToShow;
     private ThreadSingUNOMachine threadSingUNOMachine;
     private ThreadPlayMachine threadPlayMachine;
+
     private long playerTime;
 
     /**
@@ -50,11 +50,17 @@ public class GameUnoController {
         this.gameUno.initialCard(table, tableImageView);
 
         threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer());
-        Thread t = new Thread(threadSingUNOMachine, "ThreadSingUNO");
-        t.start();
+        threadPlayMachine = new ThreadPlayMachine(this.deck, this.humanPlayer, this.table, this.machinePlayer, this.tableImageView, this.gridPaneCardsMachine, this);
 
-        threadPlayMachine = new ThreadPlayMachine(this.deck, this.humanPlayer,this.table, this.machinePlayer, this.tableImageView);
-        threadPlayMachine.start();
+        threadSingUNOMachine.setThreadPlayMachine(threadPlayMachine);
+        threadPlayMachine.setThreadSingUNOMachine(threadSingUNOMachine);
+
+        Thread t1 = new Thread(threadSingUNOMachine, "ThreadSingUNO");
+        Thread t2 = new Thread(threadPlayMachine, "ThreadPlayMachine");
+
+        t1.start();
+        t2.start();
+        Platform.runLater(() -> threadPlayMachine.updateMachineCardsView());
     }
 
     /**
@@ -72,8 +78,6 @@ public class GameUnoController {
     /**
      * Prints the human player's cards on the grid pane.
      */
-
-
     private void printCardsHumanPlayer() {
         this.gridPaneCardsPlayer.getChildren().clear();
         Card[] currentVisibleCardsHumanPlayer = this.gameUno.getCurrentVisibleCardsHumanPlayer(this.posInitCardToShow);
@@ -109,7 +113,7 @@ public class GameUnoController {
     }
 
     /**
-     * Finds the position of a specific card in the human player's hand.
+     * Finds the position of a card in the human player's hand.
      *
      * @param card the card to find
      * @return the position of the card, or -1 if not found
@@ -155,7 +159,7 @@ public class GameUnoController {
      * @param event the action event
      */
     @FXML
-    void onHandleTakeCard(ActionEvent event) {
+    public void onHandleTakeCard(ActionEvent event) {
         if (!deck.isEmpty()) {
             Card newCard = deck.takeCard();
             humanPlayer.addCard(newCard);
@@ -174,17 +178,35 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
+        // Verifica si el jugador humano tiene solo una carta
         if (humanPlayer.getCardsPlayer().size() == 1) {
             System.out.println("El jugador ha dicho UNO");
             playerTime = System.currentTimeMillis();
+
             // Aquí puedes añadir lógica adicional si hay reglas específicas para cuando se dice "UNO"
         } else {
-            // Penalización: por ejemplo, el jugador debe tomar 2 cartas
+            // Penalización para el jugador humano: debe tomar 2 cartas
+            System.out.println("El jugador no ha dicho UNO y será penalizado con 2 cartas");
             humanPlayer.drawCards(deck, 2);
             printCardsHumanPlayer();
-            System.out.println(" Tus cartas: ");
+            System.out.println("Tus cartas: ");
             humanPlayer.printCardsPlayer();
+        }
+
+        // Verifica si la máquina tiene solo una carta
+        if (machinePlayer.getCardsPlayer().size() == 1) {
+            // Penalización para la máquina: debe tomar 2 cartas
+            System.out.println("La máquina no ha dicho UNO y será penalizada con 2 cartas");
+            machinePlayer.drawCards(deck, 2);
+            threadPlayMachine.updateMachineCardsView(); // Actualiza la vista de las cartas de la máquina
         }
     }
 
+    @FXML
+    void onHandleExit(ActionEvent event) throws IOException {
+        GameUnoStage.deleteInstance();
+        Platform.exit();  // Esto cerrará completamente la aplicación
+        System.exit(0);
+    }
 }
+
