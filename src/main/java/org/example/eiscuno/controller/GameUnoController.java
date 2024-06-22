@@ -36,7 +36,7 @@ public class GameUnoController {
     private int posInitCardToShow;
     private ThreadSingUNOMachine threadSingUNOMachine;
     private ThreadPlayMachine threadPlayMachine;
-
+    private boolean hasSungOne = false;
     private long playerTime;
 
     /**
@@ -49,7 +49,7 @@ public class GameUnoController {
         printCardsHumanPlayer();
         this.gameUno.initialCard(table, tableImageView);
 
-        threadSingUNOMachine = new ThreadSingUNOMachine(this.humanPlayer.getCardsPlayer());
+        threadSingUNOMachine = new ThreadSingUNOMachine(this.machinePlayer.getCardsPlayer());
         threadPlayMachine = new ThreadPlayMachine(this.deck, this.humanPlayer, this.table, this.machinePlayer, this.tableImageView, this.gridPaneCardsMachine, this);
 
         threadSingUNOMachine.setThreadPlayMachine(threadPlayMachine);
@@ -97,15 +97,20 @@ public class GameUnoController {
                          throw new RuntimeException(e);
                      }
                      tableImageView.setImage(card.getImage());
-                        humanPlayer.removeCard(findPosCardsHumanPlayer(card));
+                     humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                      if (card.getValue().equals("R") || card.getValue().equals("S") || card.getValue().equals("+2") || card.getValue().equals("+4")){
                          printCardsHumanPlayer();
+                         checkIsUno();
+                         checkIsGameOver();
                          createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta",
                                  "¡Vuelve a jugar!");
                      } else {
+                         checkIsGameOver();
+                         checkIsUno();
                          threadPlayMachine.setHasPlayerPlayed(true);
                          printCardsHumanPlayer();
                      }
+//                     checkIsGameOver();
                     } else {
                         createAlert("No puedes jugar esa carta", "Carta no valida");
                     }
@@ -127,6 +132,30 @@ public class GameUnoController {
             }
         }
         return -1;
+    }
+
+    /**
+     * Checks if the game is over.
+     * If the human player has no cards left, the player wins.
+     */
+    private void checkIsGameOver(){
+        if(humanPlayer.getCardsPlayer().isEmpty()){
+            createAlert("¡Has ganado!", "¡Felicidades!");
+            GameUnoStage.deleteInstance();
+            Platform.exit();
+            System.exit(0);
+        }
+    }
+
+    private void checkIsUno(){
+        if(humanPlayer.getCardsPlayer().size() == 1){
+            playerTime = System.currentTimeMillis();
+            if(playerTime < System.currentTimeMillis() + 5000 && !hasSungOne){
+                createAlert("Has tardado demasiado en decir UNO, penalización de 2 cartas", "Penalización");
+                humanPlayer.drawCards(deck, 2);
+                printCardsHumanPlayer();
+            }
+        }
     }
 
     /**
@@ -178,7 +207,8 @@ public class GameUnoController {
     void onHandleUno(ActionEvent event) {
         if (humanPlayer.getCardsPlayer().size() == 1) {
             alertInformation.createAlert("Dijiste UNO", "UNO!");
-            playerTime = System.currentTimeMillis();
+            hasSungOne = true;
+//            playerTime = System.currentTimeMillis();
         } else {
             alertInformation.createAlert("Dijiste UNO falsamente, penalización de 2 cartas", "Penalización");
             humanPlayer.drawCards(deck, 2);

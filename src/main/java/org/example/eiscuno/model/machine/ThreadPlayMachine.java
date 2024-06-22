@@ -9,8 +9,11 @@ import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.game.GameUno;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
+import org.example.eiscuno.view.GameUnoStage;
 import org.example.eiscuno.view.alert.alertInformation;
 import org.example.eiscuno.model.unoenum.EISCUnoEnum;
+
+import static org.example.eiscuno.view.alert.alertInformation.createAlert;
 
 /**
  * ThreadPlayMachine is a class that extends Thread to handle the machine player's actions during the game.
@@ -102,17 +105,19 @@ public class ThreadPlayMachine extends Thread {
                                     e.printStackTrace();
                                 }
                             }
+                            checkIsGameOver();
+                            threadSingUNOMachine.checkUNO();
                         }
                     }
                 }
-
-                // Verifica si la máquina debe ser penalizada por no decir "UNO"
-                if (machinePlayer.getCardsPlayer().size() == 1 && !threadSingUNOMachine.isUnoCalled()) {
-                    createAlert("La máquina no ha dicho UNO y será penalizada con 2 cartas", "Penalización");
-                    machinePlayer.drawCards(deck, 2);
-                    Platform.runLater(this::updateMachineCardsView);
-                }
-
+//                threadSingUNOMachine.checkUNO();
+//                // Verifica si la máquina debe ser penalizada por no decir "UNO"
+//                if (machinePlayer.getCardsPlayer().size() == 1) {
+//                    threadSingUNOMachine.checkUNO();
+//                    createAlert("La máquina no ha dicho UNO y será penalizada con 2 cartas", "Penalización");
+//                    machinePlayer.drawCards(deck, 2);
+//                    Platform.runLater(this::updateMachineCardsView);
+//                }
                 hasPlayerPlayed = false;
             }
         }
@@ -145,6 +150,15 @@ public class ThreadPlayMachine extends Thread {
                 createAlert("La máquina ha dicho UNO", "UNO!");
             });
         }
+
+    private void checkIsGameOver(){
+        if(machinePlayer.getCardsPlayer().isEmpty()){
+            createAlert("¡La maquina ha ganado!", "¡Victoria!");
+            GameUnoStage.deleteInstance();
+            Platform.exit();
+            System.exit(0);
+        }
+    }
 
         /**
          * Places a card on the table and updates the UI.

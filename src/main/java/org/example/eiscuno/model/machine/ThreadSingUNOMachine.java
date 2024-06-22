@@ -19,7 +19,6 @@ public class ThreadSingUNOMachine implements Runnable{
     public ThreadSingUNOMachine(ArrayList<Card> cardsPlayer){
         this.cardsPlayer = cardsPlayer;
         this.unoCalled = false;
-
     }
 
     /**
@@ -48,7 +47,7 @@ public class ThreadSingUNOMachine implements Runnable{
     /**
      * Checks if the machine player has only one card left and prints "UNO" if true.
      */
-    private void checkUNO() {
+    public void checkUNO() {
         if (cardsPlayer.size() == 1 && !unoCalled) {
             System.out.println("UNO");
             unoCalled = true;
