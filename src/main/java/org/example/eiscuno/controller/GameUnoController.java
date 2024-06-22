@@ -20,6 +20,8 @@ import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
 
+import static org.example.eiscuno.view.alert.alertInformation.createAlert;
+
 public class GameUnoController {
 
     @FXML
@@ -97,14 +99,14 @@ public class GameUnoController {
                         humanPlayer.removeCard(findPosCardsHumanPlayer(card));
                      if (card.getValue().equals("R") || card.getValue().equals("S")) {
                          printCardsHumanPlayer();
-                         alertInformation.createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta",
+                         createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta",
                                  "¡Vuelve a jugar!");
                      } else {
                          threadPlayMachine.setHasPlayerPlayed(true);
                          printCardsHumanPlayer();
                      }
                     } else {
-                        alertInformation.createAlert("No puedes jugar esa carta", "Carta no valida");
+                        createAlert("No puedes jugar esa carta", "Carta no valida");
                     }
             });
 
@@ -178,27 +180,19 @@ public class GameUnoController {
      */
     @FXML
     void onHandleUno(ActionEvent event) {
-        // Verifica si el jugador humano tiene solo una carta
         if (humanPlayer.getCardsPlayer().size() == 1) {
-            System.out.println("El jugador ha dicho UNO");
+            alertInformation.createAlert("Dijiste UNO", "UNO!");
             playerTime = System.currentTimeMillis();
-
-            // Aquí puedes añadir lógica adicional si hay reglas específicas para cuando se dice "UNO"
         } else {
-            // Penalización para el jugador humano: debe tomar 2 cartas
-            System.out.println("El jugador no ha dicho UNO y será penalizado con 2 cartas");
+            alertInformation.createAlert("Dijiste UNO falsamente, penalización de 2 cartas", "Penalización");
             humanPlayer.drawCards(deck, 2);
             printCardsHumanPlayer();
-            System.out.println("Tus cartas: ");
-            humanPlayer.printCardsPlayer();
         }
 
-        // Verifica si la máquina tiene solo una carta
-        if (machinePlayer.getCardsPlayer().size() == 1) {
-            // Penalización para la máquina: debe tomar 2 cartas
-            System.out.println("La máquina no ha dicho UNO y será penalizada con 2 cartas");
+        if (machinePlayer.getCardsPlayer().size() == 1 && !threadSingUNOMachine.isUnoCalled()) {
+            alertInformation.createAlert("La máquina no ha dicho UNO y será penalizada con 2 cartas", "Penalización");
             machinePlayer.drawCards(deck, 2);
-            threadPlayMachine.updateMachineCardsView(); // Actualiza la vista de las cartas de la máquina
+            threadPlayMachine.updateMachineCardsView();
         }
     }
 
