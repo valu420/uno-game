@@ -1,99 +1,86 @@
 package org.example.eiscuno.model.player;
 
+import org.example.eiscuno.model.Observable;
+import org.example.eiscuno.model.Observer;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a player in the Uno game.
  */
-public class Player implements IPlayer {
-    private ArrayList<Card> cardsPlayer;
-    private String typePlayer;
 
-    /**
-     * Constructs a new Player object with an empty hand of cards.
-     */
-    public Player(String typePlayer) {
-        this.cardsPlayer = new ArrayList<Card>();
-        this.typePlayer = typePlayer;
-    }
+public class Player extends Observable implements IPlayer {
+        private ArrayList<Card> cardsPlayer;
+        private String typePlayer;
+    private List<Observer> observers = new ArrayList<>();
 
-    /**
-     * Adds a card to the player's hand.
-     *
-     * @param card The card to be added to the player's hand.
-     */
-    @Override
-    public void addCard(Card card) {
-        cardsPlayer.add(card);
-    }
-
-    /**
-     * Retrieves all cards currently held by the player.
-     *
-     * @return An ArrayList containing all cards in the player's hand.
-     */
-    @Override
-    public ArrayList<Card> getCardsPlayer() {
-        return cardsPlayer;
-    }
-
-    /**
-     * Removes a card from the player's hand based on its index.
-     *
-     * @param index The index of the card to remove.
-     */
-    @Override
-    public void removeCard(int index) {
-        cardsPlayer.remove(index);
-    }
-
-    /**
-     * Retrieves a card from the player's hand based on its index.
-     *
-     * @param index The index of the card to retrieve.
-     * @return The card at the specified index in the player's hand.
-     */
-    @Override
-    public Card getCard(int index){
-        return cardsPlayer.get(index);
-    }
-
-    public String getTypePlayer() {
-        return typePlayer;
-    }
-
-    @Override
-    public void drawCards(Deck deck, int numberOfCards) {
-        for (int i = 0; i < numberOfCards; i++) {
-            addCard(deck.takeCard());
+        public Player(String typePlayer) {
+            this.cardsPlayer = new ArrayList<Card>();
+            this.typePlayer = typePlayer;
         }
-    }
 
-    /**
-     * Finds a playable card that matches the current card's color or value.     * @param currentColor the color of the current card on the table
-     * @param currentValue the value of the current card on the table
-     * @return a playable card, or null if no card can be played
-     */
-    public boolean findPlayableCard(String currentColor, String currentValue) {
-        for (Card card : cardsPlayer) {
-            if (card.getColor().equals(currentColor) || card.getValue().equals(currentValue)
-                    || card.getValue().equals("W") || card.getValue().equals("+4")) {
-                return true;
+        @Override
+        public void addCard(Card card) {
+            cardsPlayer.add(card);
+            notifyObservers();
+        }
+
+        @Override
+        public ArrayList<Card> getCardsPlayer() {
+            return cardsPlayer;
+        }
+
+        @Override
+        public void removeCard(int index) {
+            cardsPlayer.remove(index);
+            notifyObservers();
+        }
+
+        @Override
+        public Card getCard(int index) {
+            return cardsPlayer.get(index);
+        }
+
+        public String getTypePlayer() {
+            return typePlayer;
+        }
+
+        @Override
+        public void drawCards(Deck deck, int numberOfCards) {
+            for (int i = 0; i < numberOfCards; i++) {
+                addCard(deck.takeCard());
             }
         }
-        return false;
+    public void addObserver(Observer observer) {
+        observers.add(observer);
     }
 
-    /**
-     * Prints all cards currently held by the player.
-     * Each card in the player's hand is printed to the console.
-     */
-    public void printCardsPlayer() {
-        for (Card card : this.cardsPlayer) {
-            System.out.println(card);
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update();
         }
     }
-}
+
+        public boolean findPlayableCard(String currentColor, String currentValue) {
+            for (Card card : cardsPlayer) {
+                if (card.getColor().equals(currentColor) || card.getValue().equals(currentValue)
+                        || card.getValue().equals("W") || card.getValue().equals("+4")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public void printCardsPlayer() {
+            for (Card card : this.cardsPlayer) {
+                System.out.println(card);
+            }
+        }
+    }

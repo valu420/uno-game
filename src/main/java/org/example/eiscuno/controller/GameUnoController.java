@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import org.example.eiscuno.model.PlayerView;
 import org.example.eiscuno.model.card.Card;
 import org.example.eiscuno.model.deck.Deck;
 import org.example.eiscuno.model.game.GameUno;
@@ -36,6 +37,8 @@ public class GameUnoController {
     private Table table;
     private GameUno gameUno;
     private int posInitCardToShow;
+    private PlayerView playerView;
+
     private ThreadSingUNOMachine threadSingUNOMachine;
     private ThreadPlayMachine threadPlayMachine;
 
@@ -46,6 +49,10 @@ public class GameUnoController {
      */
     @FXML
     public void initialize() {
+        humanPlayer = new Player("HUMAN_PLAYER");
+        playerView = new PlayerView(gridPaneCardsPlayer, humanPlayer);
+        humanPlayer.addObserver(playerView);
+
         initVariables();
         this.gameUno.startGame();
         printCardsHumanPlayer();
@@ -167,8 +174,8 @@ public class GameUnoController {
             humanPlayer.addCard(newCard);
             deck.discardCard(newCard);
             printCardsHumanPlayer();
-            threadPlayMachine.setHasPlayerPlayed(true);
-        }else {
+
+        } else {
             deck.refillDeckFromDiscardPile();
         }
     }
