@@ -11,6 +11,11 @@ import org.testfx.framework.junit5.ApplicationTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class is used to test the functionality of the GameUno class.
+ * It extends ApplicationTest from the TestFX framework for JavaFX, which provides support for testing JavaFX applications.
+ * The test methods in this class use JUnit 5 annotations.
+ */
 class GameUnoTest extends ApplicationTest {
 
     private GameUno gameUno;
@@ -20,7 +25,10 @@ class GameUnoTest extends ApplicationTest {
     private Player machinePlayer;
     private Deck deck;
 
-
+    /**
+     * This method sets up the necessary objects for the tests.
+     * It is annotated with @BeforeEach, so it runs before each test method in this class.
+     */
     @BeforeEach
     void setUp() {
         humanPlayer = new Player("Human");
@@ -31,6 +39,13 @@ class GameUnoTest extends ApplicationTest {
         imageView = new ImageView();
     }
 
+    /**
+     * This test method verifies the functionality of the startGame method in the GameUno class.
+     * It first creates a new GameUno object and calls the startGame method.
+     * Then it checks the following:
+     * - The human player should have 5 cards after starting the game.
+     * - The machine player should have 5 cards after starting the game.
+     */
     @Test
     void testStartGame() {
         gameUno.startGame();
@@ -38,6 +53,13 @@ class GameUnoTest extends ApplicationTest {
         assertEquals(5, machinePlayer.getCardsPlayer().size(), "Machine player should have 5 cards");
     }
 
+    /**
+     * This test method verifies the functionality of the initialCard method in the GameUno class.
+     * It first creates a new GameUno object and calls the initialCard method.
+     * Then it checks the following:
+     * - The initial card should not be null.
+     * - The initial card should not be a special card.
+     */
     @Test
     void testInitialCard() {
         gameUno.initialCard(table, imageView);

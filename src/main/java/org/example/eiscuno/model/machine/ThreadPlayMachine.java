@@ -1,7 +1,6 @@
 package org.example.eiscuno.model.machine;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import org.example.eiscuno.controller.GameUnoController;
@@ -13,6 +12,11 @@ import org.example.eiscuno.model.table.Table;
 import org.example.eiscuno.view.alert.alertInformation;
 import org.example.eiscuno.model.unoenum.EISCUnoEnum;
 
+/**
+ * ThreadPlayMachine is a class that extends Thread to handle the machine player's actions during the game.
+ * The machine player plays a card if it has a valid card to play, otherwise it draws a card.
+ * The machine player also checks if the human player has one card left and penalizes the human player if "UNO" is not called.
+ */
 public class ThreadPlayMachine extends Thread {
     private Player humanPlayer;
     private Table table;
@@ -21,9 +25,7 @@ public class ThreadPlayMachine extends Thread {
     private GameUno gameUno;
     private GameUnoController controller;
     private ThreadSingUNOMachine threadSingUNOMachine;
-
     private ImageView tableImageView;
-
     private GridPane gridPaneCardsMachine;
     private volatile boolean hasPlayerPlayed;
     private volatile boolean running = true;
@@ -31,7 +33,6 @@ public class ThreadPlayMachine extends Thread {
 
     /**
      * Constructs a new ThreadPlayMachine instance.
-     *
      * @param deck                 The deck of cards used in the game.
      * @param humanPlayer          The human player participating in the game.
      * @param table                The table where cards are placed during the game.
@@ -51,11 +52,19 @@ public class ThreadPlayMachine extends Thread {
         this.controller = controller;
         this.posInitCardToShow = 0;
     }
+
+    /**
+     * Sets the ThreadSingUNOMachine instance.
+     *
+     * @param threadSingUNOMachine The ThreadSingUNOMachine instance to set.
+     */
     public void setThreadSingUNOMachine(ThreadSingUNOMachine threadSingUNOMachine) {
         this.threadSingUNOMachine = threadSingUNOMachine;
     }
+
     /**
      * The run method defines the actions taken by the machine player during the game.
+     * The machine player plays a card if it has a valid card to play, otherwise it draws a card.
      */
     @Override
     public void run() {
@@ -77,13 +86,13 @@ public class ThreadPlayMachine extends Thread {
                         Card card = chooseRandomCard();
                         if (this.table.isValidCard(card)) {
                             handleSpecialCards(card);
-                            if (!card.getValue().equals("R") && !card.getValue().equals("S")) {
+                            if (!card.getValue().equals("R") && !card.getValue().equals("S") && !card.getValue().equals("+2") && !card.getValue().equals("+4")){
                                 putCardOnTheTable(card);
                                 Platform.runLater(this::updateMachineCardsView);
                                 machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
                                 hasPlayerPlayed = false;
                                 hasMachinePlayedCard = true;
-                            } else if (card.getValue().equals("R") || card.getValue().equals("S")) {
+                            } else if (card.getValue().equals("R") || card.getValue().equals("S") || card.getValue().equals("+2") || card.getValue().equals("+4")){
                                 putCardOnTheTable(card);
                                 Platform.runLater(this::updateMachineCardsView);
                                 machinePlayer.removeCard(machinePlayer.getCardsPlayer().indexOf(card));
@@ -114,7 +123,6 @@ public class ThreadPlayMachine extends Thread {
 
         /**
          * Handles special cards (Wild, +4, +2) played by the machine.
-         *
          * @param card The special card played.
          */
         private void handleSpecialCards (Card card){
@@ -132,12 +140,15 @@ public class ThreadPlayMachine extends Thread {
             }
         }
 
+        /**
+         * Informs the ThreadPlayMachine instance that the human player has called "UNO".
+         */
         public void onUnoCalled () {
             // Aquí puedes realizar acciones si es necesario cuando el jugador dice "UNO"
         }
+
         /**
          * Places a card on the table and updates the UI.
-         *
          * @param card The card to be placed on the table.
          */
         private void putCardOnTheTable(Card card){
@@ -148,10 +159,8 @@ public class ThreadPlayMachine extends Thread {
             });
         }
 
-
         /**
          * Retrieves the current visible cards of the machine player.
-         *
          * @param posInitCardToShow The initial position of the cards to show.
          * @return An array of visible cards.
          */
@@ -165,7 +174,9 @@ public class ThreadPlayMachine extends Thread {
             return cards;
         }
 
-
+        /**
+         * Updates the machine player's cards view.
+         */
     public void updateMachineCardsView() {
         gridPaneCardsMachine.getChildren().clear();
         Card[] currentVisibleCardsMachine = getCurrentVisibleCardsMachine(posInitCardToShow);
@@ -181,7 +192,6 @@ public class ThreadPlayMachine extends Thread {
 
     /**
      * Chooses a random card from the machine player's hand.
-     *
      * @return A randomly selected card.
      */
     private Card chooseRandomCard() {
@@ -191,7 +201,6 @@ public class ThreadPlayMachine extends Thread {
 
     /**
      * Sets the hasPlayerPlayed flag.
-     *
      * @param hasPlayerPlayed Indicates if the human player has played a card.
      */
     public void setHasPlayerPlayed(boolean hasPlayerPlayed) {
@@ -200,7 +209,6 @@ public class ThreadPlayMachine extends Thread {
 
     /**
      * Chooses a random color for Wild cards.
-     *
      * @return A randomly selected color.
      */
     private String chooseRandomColor() {
@@ -219,10 +227,8 @@ public class ThreadPlayMachine extends Thread {
         });
 }
 
-
     /**
      * Sets the running flag to stop the thread.
-     *
      * @param running The running state to set.
      * @return The updated running state.
      */

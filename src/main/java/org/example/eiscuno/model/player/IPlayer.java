@@ -13,16 +13,19 @@ public interface IPlayer {
 
     /**
      * Adds a card to the player's hand.
-     *
      * @param card The card to be added to the player's hand.
      */
     void addCard(Card card);
 
+    /**
+     * Draws a specified number of cards from the deck and adds them to the player's hand.
+     * @param deck The deck from which to draw cards.
+     * @param numberOfCards The number of cards to draw.
+     */
     void drawCards(Deck deck, int numberOfCards);
 
     /**
      * Retrieves a card from the player's hand based on its index.
-     *
      * @param index The index of the card to retrieve.
      * @return The card at the specified index in the player's hand.
      */
@@ -30,14 +33,12 @@ public interface IPlayer {
 
     /**
      * Retrieves all cards currently held by the player.
-     *
      * @return An ArrayList containing all cards in the player's hand.
      */
     ArrayList<Card> getCardsPlayer();
 
     /**
      * Removes a card from the player's hand based on its index.
-     *
      * @param index The index of the card to remove.
      */
     void removeCard(int index);

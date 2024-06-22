@@ -19,7 +19,6 @@ public class Table {
 
     /**
      * Adds a card to the table.
-     *
      * @param card The card to be added to the table.
      */
     public void addCardOnTheTable(Card card){
@@ -28,7 +27,6 @@ public class Table {
 
     /**
      * Retrieves the current card on the table.
-     *
      * @return The card currently on the table.
      * @throws IndexOutOfBoundsException if there are no cards on the table.
      */
@@ -41,7 +39,6 @@ public class Table {
 
     /**
      * Checks if a given card is valid to play on the current card on the table.
-     *
      * @param card The card to check for validity.
      * @return True if the card is valid to play, otherwise false.
      */

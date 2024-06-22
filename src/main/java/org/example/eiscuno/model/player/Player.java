@@ -22,7 +22,6 @@ public class Player implements IPlayer {
 
     /**
      * Adds a card to the player's hand.
-     *
      * @param card The card to be added to the player's hand.
      */
     @Override
@@ -32,7 +31,6 @@ public class Player implements IPlayer {
 
     /**
      * Retrieves all cards currently held by the player.
-     *
      * @return An ArrayList containing all cards in the player's hand.
      */
     @Override
@@ -42,7 +40,6 @@ public class Player implements IPlayer {
 
     /**
      * Removes a card from the player's hand based on its index.
-     *
      * @param index The index of the card to remove.
      */
     @Override
@@ -52,7 +49,6 @@ public class Player implements IPlayer {
 
     /**
      * Retrieves a card from the player's hand based on its index.
-     *
      * @param index The index of the card to retrieve.
      * @return The card at the specified index in the player's hand.
      */
@@ -61,10 +57,20 @@ public class Player implements IPlayer {
         return cardsPlayer.get(index);
     }
 
+
+    /**
+     * Return the type of Player
+     * @return The type of player.
+     */
     public String getTypePlayer() {
         return typePlayer;
     }
 
+    /**
+     * Draws a specified number of cards from the deck and adds them to the player's hand.
+     * @param deck The deck from which to draw cards.
+     * @param numberOfCards The number of cards to draw.
+     */
     @Override
     public void drawCards(Deck deck, int numberOfCards) {
         for (int i = 0; i < numberOfCards; i++) {

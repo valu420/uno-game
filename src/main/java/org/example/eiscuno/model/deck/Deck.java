@@ -51,17 +51,24 @@ public class Deck {
         Collections.shuffle(deckOfCards);
     }
 
+    /**
+     * Returns the discard pile.
+     * @return the discard pile
+     */
     public Stack<Card> getDiscardPile() {
         return discardPile;
     }
 
+    /**
+     * Returns the deck of cards.
+     * @return the deck of cards
+     */
     public Stack<Card> getDeckOfCards() {
         return deckOfCards;
     }
 
     /**
      * Returns the value of the card based on its name.
-     *
      * @param name the name of the card
      * @return the value of the card
      */
@@ -104,7 +111,6 @@ public class Deck {
     }
     /**
      * Returns the color of the card based on its name.
-     *
      * @param name the name of the card
      * @return the color of the card
      */
@@ -126,7 +132,6 @@ public class Deck {
 
     /**
      * Takes a card from the top of the deck.
-     *
      * @return the card from the top of the deck
      * @throws IllegalStateException if the deck is empty
      */
@@ -142,7 +147,6 @@ public class Deck {
 
     /**
      * Checks if the deck is empty.
-     *
      * @return true if the deck is empty, false otherwise
      */
     public boolean isEmpty() {
@@ -166,13 +170,16 @@ public class Deck {
 
     /**
      * Adds a card to the discard pile.
-     *
      * @param card the card to be added to the discard pile
      */
     public void discardCard(Card card) {
         discardPile.push(card);
     }
 
+    /**
+     * Adds a card to the deck.
+     * @param card the card to be added to the deck
+     */
     public void addCardToDeck(Card card) {
         deckOfCards.push(card);
     }

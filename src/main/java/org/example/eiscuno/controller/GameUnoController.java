@@ -3,7 +3,6 @@ package org.example.eiscuno.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -15,7 +14,6 @@ import org.example.eiscuno.model.machine.ThreadSingUNOMachine;
 import org.example.eiscuno.model.player.Player;
 import org.example.eiscuno.model.table.Table;
 import org.example.eiscuno.view.GameUnoStage;
-import org.example.eiscuno.view.alert.alertInformation;
 import org.example.eiscuno.view.alert.alertInformation;
 
 import java.io.IOException;
@@ -77,6 +75,9 @@ public class GameUnoController {
 
     /**
      * Prints the human player's cards on the grid pane.
+     * The cards are clickable, and the player can play a card by clicking on it.
+     * If the card is valid, it is played, and the machine player plays its turn.
+     * If the card is not valid, an alert is shown to the player.
      */
     private void printCardsHumanPlayer() {
         this.gridPaneCardsPlayer.getChildren().clear();
@@ -95,7 +96,7 @@ public class GameUnoController {
                      }
                      tableImageView.setImage(card.getImage());
                         humanPlayer.removeCard(findPosCardsHumanPlayer(card));
-                     if (card.getValue().equals("R") || card.getValue().equals("S")) {
+                     if (card.getValue().equals("R") || card.getValue().equals("S") || card.getValue().equals("+2") || card.getValue().equals("+4")){
                          printCardsHumanPlayer();
                          alertInformation.createAlert("Has jugado una carta "+card.getValue()+"\nVuelve a tirar una carta",
                                  "¡Vuelve a jugar!");
@@ -114,7 +115,6 @@ public class GameUnoController {
 
     /**
      * Finds the position of a card in the human player's hand.
-     *
      * @param card the card to find
      * @return the position of the card, or -1 if not found
      */
@@ -129,7 +129,6 @@ public class GameUnoController {
 
     /**
      * Handles the "Back" button action to show the previous set of cards.
-     *
      * @param event the action event
      */
     @FXML
@@ -142,7 +141,6 @@ public class GameUnoController {
 
     /**
      * Handles the "Next" button action to show the next set of cards.
-     *
      * @param event the action event
      */
     @FXML
@@ -155,7 +153,6 @@ public class GameUnoController {
 
     /**
      * Handles the action of taking a card.
-     *
      * @param event the action event
      */
     @FXML
@@ -173,7 +170,6 @@ public class GameUnoController {
 
     /**
      * Handles the action of saying "Uno".
-     *
      * @param event the action event
      */
     @FXML
@@ -202,6 +198,11 @@ public class GameUnoController {
         }
     }
 
+    /**
+     * Handles the action of exiting the game.
+     * @param event the action event
+     * @throws IOException if an error occurs while loading the stage
+     */
     @FXML
     void onHandleExit(ActionEvent event) throws IOException {
         GameUnoStage.deleteInstance();

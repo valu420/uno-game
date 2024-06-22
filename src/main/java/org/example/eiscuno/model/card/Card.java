@@ -15,7 +15,6 @@ public class Card {
 
     /**
      * Constructs a Card with the specified image URL and name.
-     *
      * @param url the URL of the card image
      * @param value of the card
      */
@@ -29,7 +28,6 @@ public class Card {
 
     /**
      * Creates and configures the ImageView for the card.
-     *
      * @return the configured ImageView of the card
      */
     private ImageView createCardImageView() {
@@ -42,7 +40,6 @@ public class Card {
 
     /**
      * Gets the ImageView representation of the card.
-     *
      * @return the ImageView of the card
      */
     public ImageView getCard() {
@@ -51,21 +48,32 @@ public class Card {
 
     /**
      * Gets the image of the card.
-     *
      * @return the Image of the card
      */
     public Image getImage() {
         return image;
     }
 
+    /**
+     * Gets the value of the card.
+     * @return the value of the card
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Gets the color of the card.
+     * @return the color of the card
+     */
     public String getColor() {
         return color;
     }
 
+    /**
+     * Sets the color of the card.
+     * @param color the value of the card
+     */
     public void setColor(String color) {
         this.color = color;
     }

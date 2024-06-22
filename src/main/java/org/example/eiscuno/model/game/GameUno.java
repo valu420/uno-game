@@ -1,6 +1,5 @@
 package org.example.eiscuno.model.game;
 
-
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import org.example.eiscuno.model.card.Card;
@@ -28,7 +27,6 @@ public class GameUno implements IGameUno {
 
     /**
      * Constructs a new GameUno instance.
-     *
      * @param humanPlayer   The human player participating in the game.
      * @param machinePlayer The machine player participating in the game.
      * @param deck          The deck of cards used in the game.
@@ -58,7 +56,6 @@ public class GameUno implements IGameUno {
 
     /**
      * Draws the initial card for the table from the deck.
-     *
      * @param table      The table where the initial card is placed.
      * @param imageView  The ImageView to display the initial card.
      */
@@ -82,7 +79,7 @@ public class GameUno implements IGameUno {
 
     /**
      * Places a card on the table during the game.
-     *
+     * The card is added to the table and the appropriate actions are taken based on the card played.
      * @param card The card to be placed on the table.
      */
     @Override
@@ -107,7 +104,7 @@ public class GameUno implements IGameUno {
 
     /**
      * Performs actions after a move.
-     *
+     * Checks if the game is over and displays a message if a player has won.
      * @param playerType The type of player who made the move.
      */
     public void postMoveActions(String playerType) {
@@ -127,7 +124,6 @@ public class GameUno implements IGameUno {
 
     /**
      * Checks if the game is over and ends the game.
-     *
      * @return Always returns null.
      */
    @Override
@@ -143,7 +139,6 @@ public class GameUno implements IGameUno {
 
     /**
      * Handles the scenario when a player shouts "Uno", forcing the other player to draw a card.
-     *
      * @param playerWhoSang The player who shouted "Uno".
      */
     @Override
@@ -157,7 +152,6 @@ public class GameUno implements IGameUno {
 
     /**
      * Retrieves the current visible cards of the human player starting from a specific position.
-     *
      * @param posInitCardToShow The initial position of the cards to show.
      * @return An array of cards visible to the human player.
      */
@@ -173,9 +167,9 @@ public class GameUno implements IGameUno {
 
         return cards;
     }
+
     /**
      * Retrieves the current visible cards of the machine player.
-     *
      * @return an array of cards that are currently visible to the machine player
      */
     @Override
@@ -188,7 +182,6 @@ public class GameUno implements IGameUno {
         for (int i = 0; i < numVisibleCards; i++) {
             cards[i] = this.machinePlayer.getCard(posInitCardToShow + i);
         }
-
         return cards;
     }
 }

@@ -14,7 +14,6 @@ public class ThreadSingUNOMachine implements Runnable{
 
     /**
      * Constructs a new ThreadSingUNOMachine instance.
-     *
      * @param cardsPlayer The list of cards held by the player.
      */
     public ThreadSingUNOMachine(ArrayList<Card> cardsPlayer){
@@ -22,6 +21,11 @@ public class ThreadSingUNOMachine implements Runnable{
         this.unoCalled = false;
 
     }
+
+    /**
+     * Sets the threadPlayMachine attribute.
+     * @param threadPlayMachine The ThreadPlayMachine instance.
+     */
     public void setThreadPlayMachine(ThreadPlayMachine threadPlayMachine) {
         this.threadPlayMachine = threadPlayMachine;
     }
@@ -56,7 +60,6 @@ public class ThreadSingUNOMachine implements Runnable{
     }
     /**
      * Checks if the "UNO" has been called by the human player.
-     *
      * @return true if "UNO" has been called, false otherwise
      */
     public boolean isUnoCalled() {

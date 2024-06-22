@@ -71,7 +71,6 @@ package org.example.eiscuno.model.unoenum;
 
         /**
          * Constructor for the EISCUnoEnum enum.
-         *
          * @param filePath the file path of the image relative to the base directory
          */
         EISCUnoEnum(String filePath) {
@@ -80,7 +79,6 @@ package org.example.eiscuno.model.unoenum;
 
         /**
          * Gets the full file path of the image.
-         *
          * @return the full file path of the image
          */
         public String getFilePath() {
